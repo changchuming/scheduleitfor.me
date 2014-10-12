@@ -1,0 +1,37 @@
+extends layout
+
+block content     
+    #overlay
+    #alert
+    center
+      #container
+        #containertop
+          h1 Scheduler
+          textarea#name(name='name', placeholder='Name of event (Optional)', maxlength='100', type='text')
+          br
+          br
+          textarea#details(name='details', placeholder='Details of event (Optional)', maxlength='200', type='text')
+          br
+          br
+          h2 Drag to select length of event
+          #currenteventlength
+          #eventlength
+          br
+        #containercenter
+          h2 Drag to select range of available dates
+          #header
+            #title
+            button#previous <
+            button#next >
+          #calendar
+        br
+        #containerbottom
+          h2 Options
+          input#anonymous(type='checkbox', name='anonymous')
+          label Anonymous
+          input#multiple(type='checkbox', name='multiple')
+          label Multiple Votes from Same User
+          #containercreate
+            button#create Create
+block footer
+      script(src='/js/scheduler-index.js', type='text/javascript')

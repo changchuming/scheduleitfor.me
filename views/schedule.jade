@@ -1,0 +1,27 @@
+extends layout
+
+block content    
+    #overlay
+    #alert
+    center
+      #container
+        #containertop
+          h1 Scheduler
+        #containercenter
+          br
+          h2 Drag to select range of available dates
+          #header
+            #title
+            button#previous <
+            button#next >
+          #calendar
+        br
+        #containerbottom
+          #containersubmit
+            button#result Results
+            button#create Submit
+block footer
+    script.
+      var schedule = !{schedule}
+      var data =!{data}
+    script(src='/js/scheduler-schedule.js', type='text/javascript')

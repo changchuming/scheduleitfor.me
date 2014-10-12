@@ -1,0 +1,18 @@
+extends layout
+
+block content    
+    #overlay
+    #alert
+    center
+      #container
+        #containertop
+          h1 Scheduler
+        #containercenter
+          br
+block footer
+    script.
+      var schedule = !{schedule}
+      var data =!{data}
+      var resultset = !{resultset}
+      var usercount = !{usercount}
+    script(src='/js/scheduler-resultset.js', type='text/javascript')
