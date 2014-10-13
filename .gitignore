@@ -26,3 +26,13 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+# Visual Studio NodeJS project file
+*.njsproj
+*.sln
+*.suo
+*.ntvs
+.ntvs_analysis.dat
+obj
+
+
