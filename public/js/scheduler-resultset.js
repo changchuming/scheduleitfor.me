@@ -3,42 +3,39 @@
 * Dependencies:  jQuery 1.11.1+
 * Author:  Chang Chu-Ming
 * Email:  changchuming@gmail.com
-* Project Homepage:  
+* Project Homepage:
 */
 
-(function($) {
-	//-----------------------------------------------------------------------------------------------
-	// Global variables
-	// ----------------------------------------------------------------------------------------------
+(function($, window, document) {
+	// Constants
 	var maxMonths = 6;
 	var startDay = moment(data.startday);;
 	var MODE_TIME = 0;
 	var MODE_DATE = 1;
 	var currentMode = data.mode;
 	var currentEventLength = data.length;
-	
-	//-----------------------------------------------------------------------------------------------
-	// Default settings
-	//-----------------------------------------------------------------------------------------------
 
-	//###############################################################################################
-	// On document ready, initialize calendar
-	//###############################################################################################
-	$().ready(function() {
+	// Listen for jQuery
+	$(function(){
 		$('#previous').attr('disabled', true); // Disable previous button
-		$.initializeEventDetails();
+
+		// Initialize Event Details
+		initializeEventDetails();
+
+		// Depending on the mode, initialize either the
+		// DateResultSet() or the TimeResultSet()
 		if (currentMode == MODE_DATE) {
-			$.initializeDateResultSet();
+			initializeDateResultSet();
 		}
 		else if (currentMode == MODE_TIME) {
-			$.initializeTimeResultSet();	
+			initializeTimeResultSet();
 		}
+
+		// Remove Overlay
+		removeOverlay();
 	});
-	
-	//###############################################################################################
-	// Initialize details of event
-	//###############################################################################################
-	$.initializeEventDetails = function() {
+
+	function initializeEventDetails(){
 		if (data.name != "") {
 			var eventName = $('<h3>Event: ' + data.name + '</h3>');
 			$('#containertop').append(eventName);
@@ -47,6 +44,7 @@
 			var eventDetails = $('<h3>Details: ' + data.details + '</h3>');
 			$('#containertop').append(eventDetails);
 		}
+
 		if (currentMode == MODE_DATE) {
 			var eventLength = $('<h3>Length of event: ' + data.length + ' day(s)</h3>');
 		}
@@ -55,11 +53,8 @@
 		}
 		$('#containertop').append(eventLength);
 	}
-	
-	//###############################################################################################
-	// Initialize date result set
-	//###############################################################################################
-	$.initializeDateResultSet = function() {
+
+	function initializeDateResultSet(){
 		// Header
 		$('#containercenter').append('<h2>Top 10 available dates</h2>');
 		// Results
@@ -83,11 +78,8 @@
 			}
 		}
 	}
-	
-	//###############################################################################################
-	// Initialize time result set
-	//###############################################################################################
-	$.initializeTimeResultSet = function() {
+
+	function initializeTimeResultSet(){
 		// Header
 		$('#containercenter').append('<h2>Top 10 available times</h2>');
 		// Results
@@ -111,23 +103,24 @@
 			}
 		}
 	}
-	
+
 	// Create overlay
-	$.createOverlay = function() {
+	function createOverlay(){
 		$('#overlay').height($(document).height());
 		$('#overlay').css('visibility', 'visible');
-		$('#alert').html('</br>Your schedule has been created at</br></br>' + 
-				'<a href="' + $(location).attr('href') + reply.reply + '">' + 
+		$('#alert').html('</br>Your schedule has been created at</br></br>' +
+				'<a href="' + $(location).attr('href') + reply.reply + '">' +
 				$(location).attr('href') + reply.reply + '</a>');
 		$('#alert').css('margin-top', $(document).scrollTop()+200);
 		$('#alert').css('visibility', 'visible');
 	}
-	
-	//###############################################################################################
+
 	// Removes overlay when clicked
-	//###############################################################################################
-	$('#overlay').mouseup(function() {
-		$(this).css('visibility', 'hidden');
-		$('#alert').css('visibility', 'hidden');
-	});
-})(jQuery);
+	function removeOverlay(){
+		$('#overlay').mouseup(function() {
+			$(this).css('visibility', 'hidden');
+			$('#alert').css('visibility', 'hidden');
+		});
+	}
+
+})(window.jQuery, window, document);

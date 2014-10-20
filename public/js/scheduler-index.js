@@ -10,13 +10,13 @@
 	//-----------------------------------------------------------------------------------------------
 	// Global variables
 	// ----------------------------------------------------------------------------------------------
-	
+
 	var startDay = moment();
 	var MODE_TIME = 0;
 	var MODE_DATE = 1;
 	var currentMode = MODE_DATE;
 	var weekdayHeader; // Header of calendar
-	
+
 	// Time
 	var MAX_WEEKS = 26;
 	var DAYS_IN_WEEK = 7;
@@ -28,7 +28,7 @@
 	var dragStartRow;
 	var dragEndColumn;
 	var dragEndRow;
-	
+
 	// Date
 	var MAX_MONTHS = 6;
 	var startMonthIndex = startDay.month(); // Set start month of calendar to this month
@@ -36,17 +36,17 @@
 	var dateArray = new Array(); // Array of dates selected
 	var dragIndexStart; // Index of date at drag start
 	var dragIndexEnd; // Index of date at date end
-	
+
 	// Calendar
 	var isCalendarMouseDown = false; // Boolean flag to check for calendar drag
 	var isAdding; // If user is adding dates or hours, true, else is user is removing dates or hours, false
-	
+
 	// Event length
 	var MAX_LENGTH = 14;
 	var currentEventLength = 1;
 	var isEventLengthMouseDown = false; // Boolean flag to check for event length drag
 	var dragEventLength; // drag length of event
-	
+
 	//-----------------------------------------------------------------------------------------------
 	// Default settings
 	//-----------------------------------------------------------------------------------------------
@@ -77,7 +77,6 @@
 			$.initializeDateCalendar();
 		}
 	});
-	
 
 	//###############################################################################################
 	// Initialize length of event
@@ -89,7 +88,7 @@
 		else if (currentMode==MODE_TIME) {
 			$('#currenteventlength').html('<h3>'+currentEventLength+' hour(s)</h3>'); // Display current event length
 		}
-		
+
 		// First row
 		var eventLengthRow = $('<tr></tr>'); // Row in table of event length
 		for (i=1;i<=7;i++) {
@@ -104,7 +103,7 @@
 			eventLengthRow.append(eventLengthUnit); // Add unit to row
 		}
 		// Add date unit
-		var dateUnit = $('<td class="mode">Day(s)</td>'); 
+		var dateUnit = $('<td class="mode">Day(s)</td>');
 		if (currentMode==MODE_DATE) {
 			dateUnit.css('background', cssDefaults.background_selected);
 		}
@@ -127,7 +126,7 @@
 			eventLengthRow2.append(eventLengthUnit); // Add unit to row
 		}
 		// Add time unit
-		var timeUnit = $('<td class="mode">Hour(s)</td>'); 
+		var timeUnit = $('<td class="mode">Hour(s)</td>');
 		if (currentMode==MODE_TIME) {
 			timeUnit.css('background', cssDefaults.background_selected);
 		}
@@ -141,7 +140,7 @@
 		eventLengthTable.append(eventLengthRow2); // Add row2 to table
 		$('#eventlength').html(eventLengthTable);
 	}
-	
+
 	//###############################################################################################
 	// Attach mouse events to event length boxes
 	//###############################################################################################
@@ -178,7 +177,7 @@
 			return true;
 		}
 	});
-	
+
 	//###############################################################################################
 	// Attach mouse events to mode selection boxes
 	//###############################################################################################
@@ -191,7 +190,7 @@
 			$.initializeDateCalendar();
 		}
 	})
-	
+
 	//###############################################################################################
 	// Initialize month calendar on page
 	//###############################################################################################
@@ -206,7 +205,7 @@
 			weekdayHeader.append('<td class="date header">' + weekdayName + '</td>');
 		}
 		calendarHead.append(weekdayHeader); // Place weekday headers into table header
-		
+
 		// Body of table
 		var calendarBody =  $('<tbody></tbody>');
 
@@ -235,12 +234,12 @@
 				}
 			}
 		}
-		
+
 		var monthCalendar = $('<table id="calendartable" cellpadding="0" tablespacing="0"></table>'); // calendarTable - calendar of the month
 		monthCalendar.append(calendarHead, calendarBody); // Put header and body into calendar
 		$('#calendar').html(monthCalendar); // Place table into div
 	}
-	
+
 	//###############################################################################################
 	// Attach mouse events for dayBoxes
 	//###############################################################################################
@@ -291,7 +290,7 @@
 				}
 			}
 			dragIndexEnd = parseInt($(this).attr('date'));
-			
+
 		}
 		event.stopPropagation();
 		event.preventDefault();
@@ -324,7 +323,7 @@
 		event.preventDefault();
 		return true;
 	});
-	
+
 	//###############################################################################################
 	// Initialize time calendar on page
 	//###############################################################################################
@@ -347,7 +346,7 @@
 		var calendarBody =  $('<tbody></tbody>');
 
 		var currentTime = moment(startDay).hour(0).minute(0); // Track and display time on each timeRow
-		
+
 		// Create timeBoxes for the week
 		for (var timeIndex=1; timeIndex<=UNITS_IN_DAY; timeIndex++) {
 			var timeRow = $('<tr></tr>'); // timeRow - each period of time
@@ -362,12 +361,12 @@
 				timeBox.attr('row', timeIndex);
 			}
 		}
-		
+
 		var weekCalendar = $('<table id="calendartable" cellpadding="0" tablespacing="0"></table>'); // calendarTable - calendar of the month
 		weekCalendar.append(calendarHead, calendarBody); // Put header and body into calendar
 		$('#calendar').html(weekCalendar); // Place table into div
 	}
-	
+
 	//###############################################################################################
 	// Attach mouse events for timeBoxes
 	//###############################################################################################
@@ -379,7 +378,7 @@
 		dragStartRow = parseInt($(this).attr('row'));
 		dragEndColumn = parseInt($(this).attr('column'));
 		dragEndRow = parseInt($(this).attr('row'));
-		
+
 		var startTimeIndex =  (currentWeekIndex-startWeekIndex)*DAYS_IN_WEEK*UNITS_IN_DAY; // Get start time index of current week
 		// Sets whether user is adding or removing units
 		if ($.inArray(startTimeIndex+dragStartColumn*UNITS_IN_DAY+dragStartRow, timeArray) == -1) {
@@ -489,7 +488,7 @@
 		event.preventDefault();
 		return true;
 	});
-	
+
 	//###############################################################################################
 	// Get start date index of month
 	//###############################################################################################
@@ -501,7 +500,7 @@
 		}
 		return dateIndex;
 	}
-	
+
 	//###############################################################################################
 	//On previous button clicked, change month to previous month
 	//###############################################################################################
@@ -575,7 +574,7 @@
 			$.reset();
 		}
 	});
-	
+
 	//###############################################################################################
 	// Checks for when user stops dragging during mouseup
 	//###############################################################################################
@@ -585,7 +584,7 @@
 		$.initializeEventLength(); // Reset event length
 		$.reset(); // Reset calendar table colours
 	});
-	
+
 	//###############################################################################################
 	// Resets selected dates
 	//###############################################################################################
@@ -615,7 +614,7 @@
 			}
 		}
 	}
-	
+
 	//###############################################################################################
 	// Create schedule
 	// Shows overlay with success/failure message
@@ -653,8 +652,8 @@
 				success: function(reply) {
 					$('#overlay').height($(document).height());
 					$('#overlay').css('visibility', 'visible');
-					$('#alert').html('</br>Your schedule has been created at</br></br>' + 
-							'<a href="' + $(location).attr('href') + reply.reply + '">' + 
+					$('#alert').html('</br>Your schedule has been created at</br></br>' +
+							'<a href="' + $(location).attr('href') + reply.reply + '">' +
 							$(location).attr('href') + reply.reply + '</a>');
 					$('#alert').css('margin-top', $(document).scrollTop()+200);
 					$('#alert').css('visibility', 'visible');
@@ -662,7 +661,7 @@
 				});
 		}
 	});
-	
+
 	//###############################################################################################
 	// Removes overlay when clicked
 	//###############################################################################################
