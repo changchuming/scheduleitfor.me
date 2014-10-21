@@ -3,73 +3,63 @@
 // Load Plugins
 var gulp = require('gulp'),
     plugins = require('gulp-load-plugins')(),
-    lr = require('tiny-lr'),
-    eventStream = require('event-stream'),
-    server = lr(),
-    ts = plugins.typescript;
+    rimraf = require('rimraf');
 
 //Configuration
 var sources = {
     sass: './src/scss/**/*.scss',
     ts: './src/ts/**/*.ts',
-    js: './src/temp/*.js',
+    tsOut: './src/temp',
     browserify: './src/temp/app.js',
-    buildDir: './dist/'
+    buildDir: './dist'
 }
 
-// Typescript
-var tsProject = ts.createProject({
-    declarationFiles: true,
-    noExternalResolve: true
+// Clean Before Doing Any Output
+gulp.task('clean:js', function(cb){
+    rimraf(sources.tsOut + '/**/',cb    );
+});
+gulp.task('clean:build', function(cb){
+    rimraf(sources.buildDir + '/**/*',cb);
 })
 
-gulp.task('typescript', function(){
-    // Store reference to typescript result
-    var tsResult = gulp.src(sources.ts)
-        .pipe(ts(tsProject));
-
-    // Merge the two output streams, so this task is finished when the IO of both operations are done.
-    return eventStream.merge(
-        tsResult.dts.pipe(gulp.dest(sources.js)),
-        tsResult.js.pipe(gulp.dest(sources.js))
-    );
+// Typescript
+gulp.task('typescript', ['clean:js'], function(){
+    gulp.src(sources.ts)
+        .pipe(plugins.tsc({
+            sourcemap: true,
+            emitError: false
+        }))
+        .pipe(gulp.dest(sources.tsOut));
 })
 
 // Bundles Javascript into a Single Bundle
-gulp.task('scripts', ['typescript'], function(){
-    gulp.src(sources.js)
+gulp.task('scripts', ['types    cript'], function(){
+    gulp.src(sources.browserify)
         .pipe(plugins.browserify())
-        .pipe(gulp.dest(sources.buildDir))
-        .pipe(plugins.livereload(server));
+        .pipe(gulp.dest(sources.buildDir));
 })
 
 // Compiles SASS to CSS
 gulp.task('styles', function(){
     gulp.src(sources.sass)
         .pipe(plugins.sass())
-        .pipe(gulp.dest(sources.buildDir))
-        .pipe(plugins.livereload(server));
+        .pipe(gulp.dest(sources.buildDir));
 })
 
-// Sets up the LiveReload server
-gulp.task('livereload',function(){
-    server.listen(35729, function(err){
-        if(err){
-            return console.log(err);
-        }
-    })
-});
-
 // Watch the server for changes
-gulp.task('watch', ['livereload'],
-  function(){
-    gulp.watch(sources.scss, ['styles']);
-    gulp.watch(sources.ts,['typescript']);
-    gulp.watch('bower.json',['wiredep']);
+gulp.task('watch', function(){
+    var lr = plugins.livereload;
+
+    lr.listen();
+
+    gulp.watch(sources.scss, ['styles']).on('change', lr.changed);
+    gulp.watch(sources.ts, ['scripts']).on('change', lr.changed);
   })
 
 // Default function
-gulp.task('default', ['scripts', 'styles'],function(){
-    gulp.run('livereload');
-    gulp.run('watch');
-});
+gulp.task('default', [
+    'clean:build',
+    'clean:js',
+    'scripts',
+    'styles',
+    'watch'], function(){});

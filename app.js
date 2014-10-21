@@ -3,9 +3,9 @@
 //----------------------------------------------------------------------------------------------
 
 var express = require('express.io');
-var routes = require('./routes');
-var schedule = require('./routes/schedule');
-var user = require('./routes/user');
+var routes = require('./server/routes');
+var schedule = require('./server/routes/schedule');
+var user = require('./server/routes/user');
 var http = require('http');
 var path = require('path');
 var redis = require('redis')
@@ -16,7 +16,7 @@ var app = express();
 // Express - All environments
 //----------------------------------------------------------------------------------------------
 app.set('port', process.env.PORT || 80);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'web/views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 //----------------------------------------------------------------------------------------------
 // Development only

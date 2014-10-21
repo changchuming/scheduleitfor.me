@@ -19,7 +19,6 @@
     "gulp-livereload": "^2.1.1",
     "gulp-load-plugins": "^0.7.0",
     "gulp-sass": "^1.2.0",
-    "gulp-typescript": "^2.1.0",
-    "tiny-lr": "^0.1.4"
+    "gulp-tsc": "^0.9.2"
   }
 }
