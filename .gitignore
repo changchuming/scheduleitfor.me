@@ -1,16 +1,16 @@
-# Logs
+# Setings and Log
 logs
 *.log
+.settings
+
+# Junk
+Thumbs.db
 
 # Runtime data
-pids
-*.pid
-*.seed
+
+# Compiled and Temp Stuff
 dist
 src/temp
-
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
 
 # Dependency directory
 node_modules

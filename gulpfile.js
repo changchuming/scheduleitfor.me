@@ -3,24 +3,52 @@
 // Load Plugins
 var gulp = require('gulp'),
     plugins = require('gulp-load-plugins')(),
-    rimraf = require('rimraf');
+    pngcrush = require('imagemin-pngcrush'),
+    del = require('del');
 
 //Configuration
 var sources = {
-    sass: './src/scss/**/*.scss',
-    ts: './src/ts/**/*.ts',
-    tsOut: './src/temp',
-    browserify: './src/temp/app.js',
-    buildDir: './dist'
+    srcDir: './web',
+    buildDir: './dist',
+    sass: './web/scss/**/*.scss',
+    ts: './web/ts/**/*.ts',
+    tsOut: './web/temp/**/*',
+    browserify: './web/temp/*.js',
+    images: './web/img/**/*',
+    imagesOut: './dist/images/'
 }
 
-// Clean Before Doing Any Output
+// Cleanup Tasks
 gulp.task('clean:js', function(cb){
-    rimraf(sources.tsOut + '/**/',cb    );
+    del(sources.tsOut + '/**/*',cb);
 });
-gulp.task('clean:build', function(cb){
-    rimraf(sources.buildDir + '/**/*',cb);
+
+gulp.task('clean:buildJs', function(cb){
+    del(sources.buildDir + '/**/*.js', cb);
 })
+
+gulp.task('clean:img', function(cb){
+    del(sources.imagesOut + '/**/*', cb);
+})
+
+gulp.task('clean:css', function(cb){
+    del(sources.buildDir + '/**/*.css', cb);
+})
+
+gulp.task('clean:build', [
+    'clean:buildJs',
+    'clean:img',
+    'clean:css'], function(){});
+
+// Compress Images
+gulp.task('images', ['clean:img'], function(){
+    gulp.src(sources.images)
+        .pipe(plugins.imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}]
+        }))
+        .pipe(gulp.dest(sources.imagesOut));
+});
 
 // Typescript
 gulp.task('typescript', ['clean:js'], function(){
@@ -33,16 +61,16 @@ gulp.task('typescript', ['clean:js'], function(){
 })
 
 // Bundles Javascript into a Single Bundle
-gulp.task('scripts', ['types    cript'], function(){
+gulp.task('scripts', ['typescript', 'clean:buildJs'], function(){
     gulp.src(sources.browserify)
         .pipe(plugins.browserify())
         .pipe(gulp.dest(sources.buildDir));
 })
 
 // Compiles SASS to CSS
-gulp.task('styles', function(){
+gulp.task('styles', ['clean:css'],function(){
     gulp.src(sources.sass)
-        .pipe(plugins.sass())
+        .pipe(plugins.sass({errLogToConsole: true}))
         .pipe(gulp.dest(sources.buildDir));
 })
 
@@ -52,14 +80,14 @@ gulp.task('watch', function(){
 
     lr.listen();
 
+    gulp.watch(sources.images, ['images']).on('change', lr.changed);
     gulp.watch(sources.scss, ['styles']).on('change', lr.changed);
     gulp.watch(sources.ts, ['scripts']).on('change', lr.changed);
   })
 
 // Default function
 gulp.task('default', [
-    'clean:build',
-    'clean:js',
+    'images',
     'scripts',
     'styles',
     'watch'], function(){});
