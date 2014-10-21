@@ -4,26 +4,120 @@
  * Tim Wright
  * Chris Coyier
  -----------------------------*/
+ 
+/* Event length list */
+#eventlengthlist .ui-selecting 
+{ 
+	background: #FECA40; 
+}
+#eventlengthlist .ui-selected 
+{ 
+	background: #F39814; 
+	color: white; 
+}
+#eventlengthlist .ui-unselecting 
+{
+	background: #c0c0c0; 
+}
+#eventlengthlist 
+{ 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0;
+	width: 800px;
+	height: 150px;
+}
+#eventlengthlist li 
+{
+	margin: 3px; 
+	padding: 1px; 
+	float: left; 
+	width: 100px; 
+	height: 80px; 
+	font-size: 4em; 
+	text-align: center; 
+}
 
+/* Date list */
+#datelist .ui-selecting { 
+	background: #FECA40;
+}
+#datelist .ui-selected {
+	background: #F39814; 
+	color: white; 
+}
+#datelist .ui-unselecting {
+	background: #c0c0c0; 
+}
+#datelist 
+{ 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0;
+	width: 800px;
+	height: 500px;
+}
+#datelist li 
+{
+	margin: 3px; 
+	padding: 1px; 
+	float: left; 
+	width: 100px; 
+	height: 80px; 
+	font-size: 4em; 
+	text-align: center; 
+}
+
+/* Time list */
+#timelist .ui-selecting { 
+	background: #FECA40;
+}
+#timelist .ui-selected {
+	background: #F39814; 
+	color: white; 
+}
+#timelist .ui-unselecting {
+	background: #c0c0c0; 
+}
+#timelist 
+{ 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0;
+	width: 800px;
+	height: 500px;
+}
+#timelist li 
+{
+	margin: 3px; 
+	padding: 1px; 
+	float: left; 
+	width: 90px; 
+	height: 20px; 
+	font-size: 1em; 
+	text-align: center; 
+}
+
+/* old stuff */
 *
 {
 	margin:0;
 	padding:0;
 }
 
-body
+body                
 {
-	font:1em/1.4 Verdana, Arial, Helvetica, sans-serif;
+	font:1em/1.4 Verdana, Arial, Helvetica, sans-serif; 
 	background: #434343;
 }
 
-p.link
+p.link              
 {
 	text-align:center;
 	display: block;
 }
 
-h1
+h1					
 {
 	width: 100%;
 	font-size: 40pt;
@@ -32,7 +126,7 @@ h1
 	font-family: 'Alfa Slab One',sans-serif;
 }
 
-h2
+h2				
 {
 	text-align:left;
 	margin-left:20px;
@@ -43,7 +137,7 @@ h2
 	font-family: 'Verdana',sans-serif;
 }
 
-h3
+h3			
 {
 	margin-left:20px;
 	text-align:left;
@@ -66,8 +160,8 @@ Overlay
 	opacity:0.45;
 	-moz-opacity:0.45;
 	filter:alpha(opacity=45);
-	visibility:hidden;
-}
+	visibility:hidden; 
+} 
 
 #alert {
 	font-size: 15pt;
@@ -90,7 +184,7 @@ Overlay
 /*
 Container
 */
-#container
+#container              
 {
 	width:900px;
 	margin:0 auto;
@@ -103,7 +197,7 @@ Container
 /*
 ContainerTop
 */
-textarea
+textarea 
 {
 	text-align:left;
 	width: 750px;
@@ -120,7 +214,7 @@ textarea
 ContainerCenter
 */
 
-button#previous
+button#previous 
 {
 	float:left;
 	margin-left:40px;
@@ -139,12 +233,12 @@ button#previous
 	display: inline-block;
 	position: relative;
 }
-button#previous:disabled
+button#previous:disabled 
 {
 	color: #222;
 }
 
-button#next
+button#next 
 {
 	float:right;
 	margin-right:40px;
@@ -163,7 +257,7 @@ button#next
 	display: inline-block;
 	position: relative;
 }
-button#next:disabled
+button#next:disabled 
 {
 	color: #222;
 }
@@ -184,19 +278,19 @@ button#next:disabled
 	font-size: 30pt;
 	color: white;
 	font-family: 'Alfa Slab One',sans-serif;
-	z-index: 0;
+	z-index:: 0;
 }
 
-td
+td   
 {
 	text-align:center;
 	width:6em;
 	height:4em;
 	float:left;
-	margin:.2em;
+	margin:.2em; 
 	padding:.2em;
 	overflow:auto;
-	background: url(images/day-bg-beige.png) bottom right no-repeat;
+	background: url(images/day-bg-beige.png) bottom right no-repeat; 
 }
 
 td.date.header
@@ -207,14 +301,14 @@ td.date.header
 td.time
 {
 	height:2em;
-	margin:0.05em;
+	margin:0.05em; 
 	padding:0.05em;
 }
 
 td.length, td.mode
 {
 	height:3em;
-	margin:0.05em;
+	margin:0.05em; 
 	padding:0.05em;
 }
 
@@ -222,8 +316,8 @@ td.time.header
 {
 	height:3em;
 }
-
-td.disabled
+	
+td.disabled   
 {
 	background: url(images/day-bg-inactive.png) bottom right no-repeat;
 }
@@ -283,7 +377,7 @@ button
 	padding: 0px 6px;
 	display: inline-block;
 	position: relative;
-	z-index: 10;
+	z-index:: 10;
 }
 
 /*
