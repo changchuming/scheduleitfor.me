@@ -4,8 +4,102 @@
  * Tim Wright
  * Chris Coyier
  -----------------------------*/
+ 
+/* Event length list */
+#eventlengthlist .ui-selecting 
+{ 
+	background: #FECA40; 
+}
+#eventlengthlist .ui-selected 
+{ 
+	background: #F39814; 
+	color: white; 
+}
+#eventlengthlist .ui-unselecting 
+{
+	background: #c0c0c0; 
+}
+#eventlengthlist 
+{ 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0;
+	width: 800px;
+	height: 150px;
+}
+#eventlengthlist li 
+{
+	margin: 3px; 
+	padding: 1px; 
+	float: left; 
+	width: 100px; 
+	height: 80px; 
+	font-size: 4em; 
+	text-align: center; 
+}
 
-*                   
+/* Date list */
+#datelist .ui-selecting { 
+	background: #FECA40;
+}
+#datelist .ui-selected {
+	background: #F39814; 
+	color: white; 
+}
+#datelist .ui-unselecting {
+	background: #c0c0c0; 
+}
+#datelist 
+{ 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0;
+	width: 800px;
+	height: 500px;
+}
+#datelist li 
+{
+	margin: 3px; 
+	padding: 1px; 
+	float: left; 
+	width: 100px; 
+	height: 80px; 
+	font-size: 4em; 
+	text-align: center; 
+}
+
+/* Time list */
+#timelist .ui-selecting { 
+	background: #FECA40;
+}
+#timelist .ui-selected {
+	background: #F39814; 
+	color: white; 
+}
+#timelist .ui-unselecting {
+	background: #c0c0c0; 
+}
+#timelist 
+{ 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0;
+	width: 800px;
+	height: 500px;
+}
+#timelist li 
+{
+	margin: 3px; 
+	padding: 1px; 
+	float: left; 
+	width: 90px; 
+	height: 20px; 
+	font-size: 1em; 
+	text-align: center; 
+}
+
+/* old stuff */
+*
 {
 	margin:0;
 	padding:0;
