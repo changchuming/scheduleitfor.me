@@ -2,6 +2,7 @@
 logs
 *.log
 .settings
+.project
 
 # Junk
 Thumbs.db
@@ -14,6 +15,7 @@ src/temp
 
 # Dependency directory
 node_modules
+bower_components
 
 # Users Environment Variables
 .lock-wscript

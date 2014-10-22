@@ -1,0 +1,23 @@
+{
+  "name": "scheduleitforme",
+  "version": "0.0.1",
+  "homepage": "https://github.com/changchuming/scheduleritfor.me",
+  "authors": [
+    "Kiang Teng <kiangtengl@gmail.com>",
+    "Chu Ming <changchuming@gmail>"
+  ],
+  "description": "Easy to use scheduler for meetings",
+  "main": "bower.json",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "moment": "~2.8.3"
+  }
+}

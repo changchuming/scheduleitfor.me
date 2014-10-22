@@ -7,16 +7,17 @@ var gulp = require('gulp'),
     del = require('del');
 
 //Configuration
-var sources = {
-    srcDir: './web',
-    buildDir: './dist',
-    sass: './web/scss/**/*.scss',
-    ts: './web/ts/**/*.ts',
-    tsOut: './web/temp/**/*',
-    browserify: './web/temp/*.js',
-    images: './web/img/**/*',
-    imagesOut: './dist/images/'
-}
+var isDevelopment = true,
+    sources = {
+        srcDir: './web',
+        buildDir: './public',
+        sass: './web/scss/**/*.scss',
+        ts: './web/ts/**/*.ts',
+        tsOut: './web/temp',
+        browserify: './web/temp/*.js',
+        images: './web/img/**/*',
+        imagesOut: './public/images/'
+    };
 
 // Cleanup Tasks
 gulp.task('clean:js', function(cb){
@@ -51,7 +52,7 @@ gulp.task('images', ['clean:img'], function(){
 });
 
 // Typescript
-gulp.task('typescript', ['clean:js'], function(){
+gulp.task('typescript', function(){
     gulp.src(sources.ts)
         .pipe(plugins.tsc({
             sourcemap: true,
@@ -63,7 +64,9 @@ gulp.task('typescript', ['clean:js'], function(){
 // Bundles Javascript into a Single Bundle
 gulp.task('scripts', ['typescript', 'clean:buildJs'], function(){
     gulp.src(sources.browserify)
-        .pipe(plugins.browserify())
+        .pipe(plugins.browserify({
+            transform: 'debowerify'
+        }))
         .pipe(gulp.dest(sources.buildDir));
 })
 
