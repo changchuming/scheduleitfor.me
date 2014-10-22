@@ -1,6 +1,7 @@
 /// <reference path="../definitions/browserify.d.ts" />
 var $ = require('jquery');
 var moment = require('moment');
+var _touch_punch = require('jquery-ui-touch-punch');
 // Global variables
 var startDay = moment();
 var MODE_TIME = 0;
