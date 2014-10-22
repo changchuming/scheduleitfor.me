@@ -16,7 +16,7 @@ var isDevelopment = true,
         tsOut: './web/temp',
         browserify: './web/temp/*.js',
         images: './web/img/**/*',
-        imagesOut: './public/images/'
+        imagesOut: './public/images'
     };
 
 // Cleanup Tasks
@@ -67,14 +67,14 @@ gulp.task('scripts', ['typescript', 'clean:buildJs'], function(){
         .pipe(plugins.browserify({
             transform: 'debowerify'
         }))
-        .pipe(gulp.dest(sources.buildDir));
+        .pipe(gulp.dest(sources.buildDir + "/js"));
 })
 
 // Compiles SASS to CSS
 gulp.task('styles', ['clean:css'],function(){
     gulp.src(sources.sass)
         .pipe(plugins.sass({errLogToConsole: true}))
-        .pipe(gulp.dest(sources.buildDir));
+        .pipe(gulp.dest(sources.buildDir + "/css"));
 })
 
 // Watch the server for changes
