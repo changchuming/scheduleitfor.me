@@ -1,17 +1,21 @@
-# Logs
+# Setings and Log
 logs
 *.log
+.settings
+.project
+
+# Junk
+Thumbs.db
 
 # Runtime data
-pids
-*.pid
-*.seed
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
+# Compiled and Temp Stuff
+dist
+src/temp
 
 # Dependency directory
 node_modules
+bower_components
 
 # Users Environment Variables
 .lock-wscript
