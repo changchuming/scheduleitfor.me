@@ -1,0 +1,12 @@
+{
+    "sources" : {
+        "source_dir" :  "./web:",
+        "build_dir": "./public",
+        "sass_in": "./web/scss/**/*.scss",
+        "ts_in": "./web/ts/**/*.ts",
+        "ts_out": "./web/temp",
+        "js_in": "./web/temp/*.js",
+        "images": "./web/img/**/*",
+        "images_out": "./public/images"
+    }
+}

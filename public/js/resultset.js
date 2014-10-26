@@ -1,403 +1,112 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /// <reference path="../definitions/browserify.d.ts" />
 var $ = require("./bower_components\\jquery\\dist\\jquery.js"), moment = require("./bower_components\\moment\\moment.js");
-;
+// Shim jQuery
 window.$ = window.jQuery = $;
 require("./bower_components\\jquery-ui\\jquery-ui.js");
 require("./bower_components\\jquery-ui-touch-punch\\jquery.ui.touch-punch.min.js");
-// Global variables
-var startDay = moment(), MODE_TIME = 0, MODE_DATE = 1, currentMode = MODE_TIME, weekdayHeader; // Header of calendar
-// Time
-var MAX_WEEKS = 26;
-var DAYS_IN_WEEK = 7;
-var UNITS_IN_DAY = 24;
-var startWeekIndex = startDay.week();
-var currentWeekIndex = startWeekIndex;
-var timeArray = new Array();
-// Date
-var MAX_MONTHS = 6;
-var startMonthIndex = startDay.month(); // Set start month of calendar to this month
-var currentMonthIndex = startMonthIndex; // Set current month to this month
-var dateArray = new Array(); // Array of dates selected
-// Event length
-var MAX_LENGTH = 14;
-var currentEventLength = 1;
-//-----------------------------------------------------------------------------------------------
-// Default functions for selectables
-//-----------------------------------------------------------------------------------------------
-var selectableDefaults = {
-    selected: function (event, ui) {
-        if ($(ui.selected).hasClass('chosenfilter')) {
-            $(ui.selected).removeClass('chosenfilter').removeClass('ui-selected');
-        }
-        else {
-            $(ui.selected).addClass('chosenfilter').addClass('ui-selected');
-        }
-    },
-    selecting: function (event, ui) {
-        if ($(ui.selecting).hasClass('chosenfilter')) {
-            $(ui.selecting).addClass('ui-unselecting');
-            $(ui.selecting).removeClass('ui-selected');
-        }
-    },
-    unselecting: function (event, ui) {
-        if ($(ui.unselecting).hasClass('chosenfilter')) {
-            $(ui.unselecting).removeClass('ui-unselecting');
-            $(ui.unselecting).addClass('ui-selected');
-        }
-    }
-};
-//###############################################################################################
-// On document ready, initialize calendar
-//###############################################################################################
-$().ready(function () {
-    $('#anonymous').prop('checked', true);
+// Create Express JS Variables if they don't exist
+var data = data || {}, resultset = resultset || {}, usercount = usercount || {}, reply = reply || {};
+// Constants
+var maxMonths = 6, startDay = moment(data.startday), MODE_TIME = 0, MODE_DATE = 1, currentMode = data.mode, currentEventLength = data.length;
+// Listen for jQuery
+$(function () {
     $('#previous').attr('disabled', true); // Disable previous button
-    $.initializeEventLength();
-    if (currentMode == MODE_TIME) {
-        $.initializeTimeCalendar();
-    }
-    else if (currentMode == MODE_DATE) {
-        $.initializeDateCalendar();
-    }
-});
-//###############################################################################################
-// Initialize length of event
-//###############################################################################################
-$.initializeEventLength = function () {
+    // Initialize Event Details
+    initializeEventDetails();
+    // Depending on the mode, initialize either the
+    // DateResultSet() or the TimeResultSet()
     if (currentMode == MODE_DATE) {
-        $('#currenteventlength').html('<h3>' + currentEventLength + ' day(s)</h3>'); // Display current event length
+        initializeDateResultSet();
     }
     else if (currentMode == MODE_TIME) {
-        $('#currenteventlength').html('<h3>' + currentEventLength + ' hour(s)</h3>'); // Display current event length
+        initializeTimeResultSet();
     }
-    var eventLengthList = $('<ol id="eventlengthlist"></ol>'); // Selectable list
-    for (var i = 1; i <= 14; i++) {
-        var eventLengthListItem = $('<li class="ui-state-default">' + i + '</li>');
-        eventLengthListItem.attr('length', i);
-        eventLengthList.append(eventLengthListItem); // Populate list
-    }
-    $('#eventlength').html(eventLengthList); // Put list into div
-};
-//###############################################################################################
-// Set options of eventLengthList
-//###############################################################################################
-$(function () {
-    $('#eventlengthlist').bind('mousedown', function (e) {
-        e.metaKey = true;
-    }).selectable({
-        selected: function (event, ui) {
-            selectableDefaults.selected(event, ui);
-            currentEventLength = parseInt($(ui.selected).attr('length')); // Copies temporary length to event length
-        },
-        selecting: function (event, ui) {
-            selectableDefaults.selecting(event, ui);
-        },
-        unselecting: function (event, ui) {
-            selectableDefaults.unselecting(event, ui);
-        }
-    });
+    // Remove Overlay
+    removeOverlay();
 });
-//###############################################################################################
-// Attach mouse events to mode selection boxes
-//###############################################################################################
-$('#eventlength').on('mouseup', '.mode', function (event) {
-    currentMode = $(this).attr('mode');
-    if (currentMode == MODE_TIME) {
-        $.initializeTimeCalendar();
+function initializeEventDetails() {
+    if (data.name != "") {
+        var eventName = $('<h3>Event: ' + data.name + '</h3>');
+        $('#containertop').append(eventName);
     }
-    else if (currentMode == MODE_DATE) {
-        $.initializeDateCalendar();
+    if (data.details != "") {
+        var eventDetails = $('<h3>Details: ' + data.details + '</h3>');
+        $('#containertop').append(eventDetails);
     }
-});
-//###############################################################################################
-// Initialize date calendar on page
-//###############################################################################################
-$.initializeDateCalendar = function () {
-    // Month title
-    $('#title').html(moment.months(currentMonthIndex));
-    // Header of table
-    weekdayHeader = $('<tr></tr>');
-    for (var weekdayIndex = 0; weekdayIndex < 7; weekdayIndex++) {
-        var weekdayName = moment.weekdays(weekdayIndex).substring(0, 3);
-        weekdayHeader.append('<td class="date header">' + weekdayName + '</td>');
-    }
-    var startDateIndex = $.getStartDateIndex(currentMonthIndex); // Get start date index of current month
-    var currentDateIndex = 1; // Set current date index to 1
-    var daysInMonth = moment(startDay).month(currentMonthIndex).daysInMonth(); // Get number of days in the month
-    var daysToSkip = moment(startDay).month(currentMonthIndex).date(1).day(); // Skips the days of the first week that are not part of the month
-    var dateList = $('<ol id="datelist"></ol>'); // Selectable list
-    for (var i = 0; i < daysToSkip; i++) {
-        var dateListItem = $('<li class="ui-state-disabled"></li>');
-        dateList.append(dateListItem);
-    }
-    for (i = 0; i < daysInMonth; i++) {
-        var date = startDateIndex + currentDateIndex;
-        var dateListItem = $('<li class="ui-state-default">' + currentDateIndex + '</li>');
-        if ($.inArray(date, dateArray) != -1) {
-            dateListItem.addClass('ui-selected');
-            dateListItem.addClass('chosenfilter');
-        }
-        dateListItem.attr('date', date);
-        dateList.append(dateListItem);
-        currentDateIndex++;
-    }
-    var calendarHead = $('<table id="calendartable" cellpadding="0" tablespacing="0"></table>'); // calendarTable - calendar of the month
-    calendarHead.append(weekdayHeader); // Put header and body into calendar
-    $('#calendar').html(calendarHead); // Place table into div
-    $('#calendar').append(dateList);
-};
-//###############################################################################################
-// Set options of dateList
-//###############################################################################################
-$(function () {
-    $('#datelist').bind('mousedown', function (e) {
-        e.metaKey = true;
-    }).selectable({
-        selected: function (event, ui) {
-            selectableDefaults.selected(event, ui);
-            var date = parseInt($(ui.selected).attr('date'));
-            // Add date to dateArray
-            if ($(ui.selected).hasClass('chosenfilter')) {
-                if ($.inArray(date, dateArray) == -1) {
-                    // Adds date
-                    dateArray.push(date);
-                }
-            }
-            else {
-                var index = dateArray.indexOf(date);
-                if (index > -1) {
-                    dateArray.splice(index, 1);
-                }
-            }
-        },
-        selecting: function (event, ui) {
-            selectableDefaults.selecting(event, ui);
-        },
-        unselecting: function (event, ui) {
-            selectableDefaults.unselecting(event, ui);
-        },
-        filter: ".ui-state-default"
-    });
-});
-//###############################################################################################
-// Initialize time calendar on page
-//###############################################################################################
-$.initializeTimeCalendar = function () {
-    // Month title
-    var startDayOfWeek = moment(startDay).week(currentWeekIndex).day(0);
-    var endDayOfWeek = moment(startDay).week(currentWeekIndex).day(6);
-    $('#title').html(startDayOfWeek.date() + ' - ' + endDayOfWeek.date() + ' ' + moment.months(endDayOfWeek.month()));
-    // Header of table
-    weekdayHeader = $('<tr></tr>');
-    weekdayHeader.append('<td class="time header">Time</td>');
-    for (var weekdayIndex = 0; weekdayIndex < 7; weekdayIndex++) {
-        var weekdayName = moment.weekdays(weekdayIndex).substring(0, 3);
-        weekdayHeader.append('<td class="time header">' + weekdayName + '</br>' + (startDayOfWeek.date() + weekdayIndex) + '</td>');
-    }
-    var currentTime = moment(startDay).hour(0).minute(0); // Track and display time on each timeRow
-    var timeList = $('<ol id="timelist"></ol>'); // Selectable list
-    for (var timeIndex = 1; timeIndex <= UNITS_IN_DAY; timeIndex++) {
-        // Add vertical headers
-        var timeListItem = $('<li class="ui-state-disabled">' + currentTime.format('HH:mm') + '</li>');
-        currentTime.add('hours', 1); // Increment hour
-        timeList.append(timeListItem);
-        for (var weekdayIndex = 0; weekdayIndex < DAYS_IN_WEEK; weekdayIndex++) {
-            var timeListItem = $('<li class="ui-state-default"></li>');
-            timeListItem.attr('time', weekdayIndex * UNITS_IN_DAY + timeIndex);
-            timeList.append(timeListItem);
-        }
-    }
-    var weekCalendar = $('<table id="calendartable" cellpadding="0" tablespacing="0"></table>'); // calendarTable - calendar of the month
-    weekCalendar.append(weekdayHeader); // Put header into calendar
-    $('#calendar').html(weekCalendar); // Place table into div
-    $('#calendar').append(timeList);
-};
-//###############################################################################################
-// Set options of timeList
-//###############################################################################################
-$(function () {
-    $('#timelist').bind('mousedown', function (e) {
-        e.metaKey = true;
-    }).selectable({
-        selected: function (event, ui) {
-            selectableDefaults.selected(event, ui);
-            var startTimeIndex = (currentWeekIndex - startWeekIndex) * DAYS_IN_WEEK * UNITS_IN_DAY; // Get start time index of current week
-            var time = parseInt($(ui.selected).attr('time')) + startTimeIndex;
-            // Add time to timeArray
-            if ($(ui.selected).hasClass('chosenfilter')) {
-                if ($.inArray(time, timeArray) == -1) {
-                    // Adds time
-                    timeArray.push(time);
-                }
-            }
-            else {
-                var index = timeArray.indexOf(time);
-                if (index > -1) {
-                    timeArray.splice(index, 1);
-                }
-            }
-        },
-        selecting: function (event, ui) {
-            selectableDefaults.selecting(event, ui);
-        },
-        unselecting: function (event, ui) {
-            selectableDefaults.unselecting(event, ui);
-        },
-        filter: ".ui-state-default"
-    });
-});
-//###############################################################################################
-// Get start date index of month
-//###############################################################################################
-$.getStartDateIndex = function (monthIndex) {
-    var dateIndex = 0;
-    for (var i = startMonthIndex; i < monthIndex; i++) {
-        dateIndex += moment(startDay).month(i).daysInMonth();
-    }
-    return dateIndex;
-};
-//###############################################################################################
-//On previous button clicked, change month to previous month
-//###############################################################################################
-$('#previous').click(function () {
     if (currentMode == MODE_DATE) {
-        currentMonthIndex--; // Change current month to previous month
-        $.initializeDateCalendar();
-        // Enables next button
-        $('#next').attr('disabled', false);
-        // Disable this button if limit reached
-        if (currentMonthIndex <= startMonthIndex) {
-            $(this).attr('disabled', true);
-        }
+        var eventLength = $('<h3>Length of event: ' + data.length + ' day(s)</h3>');
     }
     else if (currentMode == MODE_TIME) {
-        currentWeekIndex--; // Change current month to previous month
-        // Change title of calendar and header
-        var startDayOfWeek = moment(startDay).week(currentWeekIndex).day(0);
-        var endDayOfWeek = moment(startDay).week(currentWeekIndex).day(6);
-        $('#title').html(startDayOfWeek.date() + ' - ' + endDayOfWeek.date() + ' ' + moment.months(endDayOfWeek.month()));
-        weekdayHeader.html('<tr></tr>');
-        weekdayHeader.append('<td class="time header">Time</td>');
-        for (var weekdayIndex = 0; weekdayIndex < 7; weekdayIndex++) {
-            var weekdayName = moment.weekdays(weekdayIndex).substring(0, 3);
-            weekdayHeader.append('<td class="time header">' + weekdayName + '</br>' + (startDayOfWeek.date() + weekdayIndex) + '</td>');
-        }
-        // Enables next button
-        $('#next').attr('disabled', false);
-        // Disable this button if limit reached
-        if (currentWeekIndex <= startWeekIndex) {
-            $(this).attr('disabled', true);
-        }
-        $.resetTimeCalendar();
+        var eventLength = $('<h3>Length of event: ' + data.length + ' hour(s)</h3>');
     }
-});
-//###############################################################################################
-//On next button clicked, change month to previous month
-//###############################################################################################
-$('#next').click(function () {
-    if (currentMode == MODE_DATE) {
-        currentMonthIndex++; // Change current month to next month
-        $.initializeDateCalendar();
-        // Enables previous button
-        $('#previous').attr('disabled', false);
-        // Disable this button if limit reached
-        if (currentMonthIndex >= startMonthIndex + MAX_MONTHS) {
-            $(this).attr('disabled', true);
-        }
-    }
-    else if (currentMode == MODE_TIME) {
-        currentWeekIndex++; // Change current month to next month
-        // Change title of calendar and header
-        var startDayOfWeek = moment(startDay).week(currentWeekIndex).day(0);
-        var endDayOfWeek = moment(startDay).week(currentWeekIndex).day(6);
-        $('#title').html(startDayOfWeek.date() + ' - ' + endDayOfWeek.date() + ' ' + moment.months(endDayOfWeek.month()));
-        weekdayHeader.html('<tr></tr>');
-        weekdayHeader.append('<td class="time header">Time</td>');
-        for (var weekdayIndex = 0; weekdayIndex < 7; weekdayIndex++) {
-            var weekdayName = moment.weekdays(weekdayIndex).substring(0, 3);
-            weekdayHeader.append('<td class="time header">' + weekdayName + '</br>' + (startDayOfWeek.date() + weekdayIndex) + '</td>');
-        }
-        // Enables previous button
-        $('#previous').attr('disabled', false);
-        // Disable this button if limit reached
-        if (currentWeekIndex >= startWeekIndex + MAX_WEEKS) {
-            $(this).attr('disabled', true);
-        }
-        $.resetTimeCalendar();
-    }
-});
-//###############################################################################################
-// Resets time calendar
-//###############################################################################################
-$.resetTimeCalendar = function () {
-    var startTimeIndex = (currentWeekIndex - startWeekIndex) * DAYS_IN_WEEK * UNITS_IN_DAY;
-    for (var i = 1; i <= UNITS_IN_DAY; i++) {
-        for (var j = 0; j < DAYS_IN_WEEK; j++) {
-            var time = j * UNITS_IN_DAY + i;
-            if ($.inArray(startTimeIndex + time, timeArray) == -1) {
-                // If time is not in timeArray
-                $('li[time=' + time + ']').removeClass('ui-selected');
-                $('li[time=' + time + ']').removeClass('chosenfilter');
+    $('#containertop').append(eventLength);
+}
+function initializeDateResultSet() {
+    // Header
+    $('#containercenter').append('<h2>Top 10 available dates</h2>');
+    // Results
+    var dateStoreArray = new Array();
+    for (var i = 0; i < resultset.length; i += 2) {
+        dateStoreArray.push(resultset[i]); // Add date number to date store array
+        // If next date has different count, sort and display all dates in date store array
+        if (resultset[i + 1] != resultset[i + 3]) {
+            dateStoreArray.sort(function (a, b) {
+                return a - b;
+            }); // Sort dates in ascending order
+            for (var j = 0; j < dateStoreArray.length; j++) {
+                var percent = Math.round(resultset[i + 1] / parseInt(usercount) * 100); // Number of available users as a percent of all users
+                $('#containercenter').append('<h3>' + (i / 2 - dateStoreArray.length + j + 2) + '. ' + moment(startDay).date(0).add('days', dateStoreArray[j]).format('dddd, MMMM Do') + '</h3>');
+                var bartext = $('<div id="bartext">' + resultset[i + 1] + '/' + parseInt(usercount) + ' (' + percent + '%)' + '</div>'); // Text on bar
+                bartext.css('width', percent + '%');
+                var bar = $('<div id="bar"/>').progressbar({ value: percent }); // Bar
+                bar.append(bartext);
+                $('#containercenter').append(bar); // Add bar to container
             }
-            else {
-                // If time is in timeArray
-                $('li[time=' + time + ']').addClass('ui-selected');
-                $('li[time=' + time + ']').addClass('chosenfilter');
+            dateStoreArray.length = 0; // Clear array
+        }
+    }
+}
+function initializeTimeResultSet() {
+    // Header
+    $('#containercenter').append('<h2>Top 10 available times</h2>');
+    // Results
+    var timeStoreArray = new Array();
+    for (var i = 0; i < resultset.length; i += 2) {
+        timeStoreArray.push(resultset[i]); // Add date number to date store array
+        // If next date has different count, sort and display all dates in date store array
+        if (resultset[i + 1] != resultset[i + 3]) {
+            timeStoreArray.sort(function (a, b) {
+                return a - b;
+            }); // Sort dates in ascending order
+            for (var j = 0; j < timeStoreArray.length; j++) {
+                var percent = Math.round(resultset[i + 1] / parseInt(usercount) * 100); // Number of available users as a percent of all users
+                $('#containercenter').append('<h3>' + (i / 2 - timeStoreArray.length + j + 2) + '. ' + moment(startDay).hour(0).minute(0).add('hours', timeStoreArray[j] - 1).format('ha, dddd, MMMM Do') + '</h3>');
+                var bartext = $('<div id="bartext">' + resultset[i + 1] + '/' + parseInt(usercount) + ' (' + percent + '%)' + '</div>'); // Text on bar
+                bartext.css('width', percent + '%');
+                var bar = $('<div id="bar"/>').progressbar({ value: percent }); // Bar
+                bar.append(bartext);
+                $('#containercenter').append(bar); // Add bar to container
             }
+            timeStoreArray.length = 0; // Clear array
         }
     }
-};
-//###############################################################################################
-// Create schedule
-// Shows overlay with success/failure message
-//###############################################################################################
-$('#create').click(function () {
-    // Check that dates or time are selected, if not, warn user
-    if ((currentMode == MODE_DATE && dateArray.length == 0) || (currentMode == MODE_TIME && timeArray.length == 0)) {
-        $('#overlay').height($(document).height());
-        $('#overlay').css('visibility', 'visible');
-        $('#alert').html('</br></br> Please select range</br>of available dates/time');
-        $('#alert').css('margin-top', $(document).scrollTop() + 200);
-        $('#alert').css('visibility', 'visible');
-    }
-    else {
-        if (currentMode == MODE_DATE) {
-            var selectedArray = dateArray;
-        }
-        else if (currentMode == MODE_TIME) {
-            var selectedArray = timeArray;
-        }
-        $.ajax({
-            type: 'POST',
-            url: '/create',
-            data: {
-                name: $('#name').val(),
-                details: $('#details').val(),
-                anonymous: $('#anonymous').is(':checked') ? 1 : 0,
-                multiple: $('#multiple').is(':checked') ? 1 : 0,
-                length: currentEventLength,
-                startday: startDay.format(),
-                mode: currentMode,
-                daterange: JSON.stringify(selectedArray)
-            },
-            success: function (reply) {
-                $('#overlay').height($(document).height());
-                $('#overlay').css('visibility', 'visible');
-                $('#alert').html('</br>Your schedule has been created at</br></br>' + '<a href="' + $(location).attr('href') + reply.reply + '">' + $(location).attr('href') + reply.reply + '</a>');
-                $('#alert').css('margin-top', $(document).scrollTop() + 200);
-                $('#alert').css('visibility', 'visible');
-            }
-        });
-    }
-});
-//###############################################################################################
+}
+// Create overlay
+function createOverlay() {
+    $('#overlay').height($(document).height());
+    $('#overlay').css('visibility', 'visible');
+    $('#alert').html('</br>Your schedule has been created at</br></br>' + '<a href="' + $(location).attr('href') + reply.reply + '">' + $(location).attr('href') + reply.reply + '</a>');
+    $('#alert').css('margin-top', $(document).scrollTop() + 200);
+    $('#alert').css('visibility', 'visible');
+}
 // Removes overlay when clicked
-//###############################################################################################
-$('#overlay').mouseup(function () {
-    $(this).css('visibility', 'hidden');
-    $('#alert').css('visibility', 'hidden');
-});
+function removeOverlay() {
+    $('#overlay').mouseup(function () {
+        $(this).css('visibility', 'hidden');
+        $('#alert').css('visibility', 'hidden');
+    });
+}
 
 },{"./bower_components\\jquery-ui-touch-punch\\jquery.ui.touch-punch.min.js":2,"./bower_components\\jquery-ui\\jquery-ui.js":3,"./bower_components\\jquery\\dist\\jquery.js":4,"./bower_components\\moment\\moment.js":5}],2:[function(require,module,exports){
 /*

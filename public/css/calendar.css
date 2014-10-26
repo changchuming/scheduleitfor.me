@@ -161,7 +161,7 @@ Container
   margin: 0 auto;
   display: block;
   min-height: 200px;
-  background: url(images/tl.png) top left no-repeat;
+  background: url(../images/tl.png) top left no-repeat;
   padding: 12px 0 0 20px; }
 
 /*
@@ -246,7 +246,7 @@ td {
   margin: 0.2em;
   padding: 0.2em;
   overflow: auto;
-  background: url(images/day-bg-beige.png) bottom right no-repeat; }
+  background: url(../images/day-bg-beige.png) bottom right no-repeat; }
 
 td.date.header {
   height: 2em; }

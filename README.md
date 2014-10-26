@@ -39,7 +39,7 @@ The application is structured in the following manner:
 
 ```
 scheduleitforme
-    - dist // Production version of front end files
+    - public // Production version of front end files
 
     - server // Server code
         - routes // Express routing
@@ -53,10 +53,7 @@ scheduleitforme
     - app.js // Starting point for the entire application
 ```
 
-
-
 # Scheduler
-
 
 
 ## Usage

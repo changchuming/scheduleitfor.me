@@ -1,14 +1,20 @@
 /// <reference path="../definitions/browserify.d.ts" />
-var $ = require('jquery');
-var moment = require('moment');
-var _touch_punch = require('jquery-ui-touch-punch');
+var $ = require('jquery'),
+	moment = require('moment');
+
+// Shim jQuery
+interface Window {$: any; jQuery: any};
+window.$ = window.jQuery = $;
+
+require('jquery-ui');
+require('jquery-ui-touch-punch');
 
 // Global variables
-var startDay = moment();
-var MODE_TIME = 0;
-var MODE_DATE = 1;
-var currentMode = MODE_TIME;
-var weekdayHeader; // Header of calendar
+var startDay = moment(),
+	MODE_TIME = 0,
+	MODE_DATE = 1,
+	currentMode = MODE_TIME,
+	weekdayHeader;  // Header of calendar
 
 // Time
 var MAX_WEEKS = 26;
