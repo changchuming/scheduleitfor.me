@@ -1,0 +1,155 @@
+@import 'calendar';
+
+// Overlay
+#overlay {
+    z-index:1000;
+    position:absolute;
+    width:100%;
+    background:#000;
+    opacity:0.45;
+    -moz-opacity:0.45;
+    filter:alpha(opacity=45);
+    visibility:hidden;
+}
+
+// Alert
+#alert {
+    font-size: 15pt;
+    font-family: 'Alfa Slab One',sans-serif;
+    width: 400px;
+    height: 200px;
+    text-align:center;
+    z-index:1001;
+    position:absolute;
+    left:0;
+    right:0;
+    margin-left:auto;
+    margin-right:auto;
+    color: #000;
+    background: #ffa;
+    border: solid;
+    visibility:hidden;
+}
+
+// Container
+#container
+{
+    width:900px;
+    margin:0 auto;
+    display:block;
+    min-height: 200px;
+    background: url(../images/tl.png) top left no-repeat;
+    padding: 12px 0 0 20px;
+}
+
+// ContainerTop
+textarea
+{
+    text-align:left;
+    width: 750px;
+    height: 30px;
+    resize: none;
+    font-size: 15pt;
+    color: #ffa;
+    background: transparent;
+    border: dotted;
+    font-family: 'Alfa Slab One',sans-serif;
+}
+
+//ContainerCenter
+button#previous
+{
+    float:left;
+    margin-left:40px;
+    font-size: 15pt;
+    height: 50px;
+    border: 0;
+    color: #fff;
+    background: #444;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-family: 'Sigmar One', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0px 6px;
+    display: inline-block;
+    position: relative;
+}
+button#previous:disabled
+{
+    color: #222;
+}
+
+button#next
+{
+    float:right;
+    margin-right:40px;
+    font-size: 15pt;
+    height: 50px;
+    border: 0;
+    color: #fff;
+    background: #444;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-family: 'Sigmar One', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0px 6px;
+    display: inline-block;
+    position: relative;
+}
+button#next:disabled
+{
+    color: #222;
+}
+
+#title
+{
+    position:absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 30pt;
+    color: white;
+    font-family: 'Alfa Slab One',sans-serif;
+    z-index: 0;
+}
+
+#anonymous
+{
+    clear: both;
+}
+
+#multiple
+{
+    clear: both;
+}
+
+#containercreate
+{
+    clear: both;
+}
+
+//ContainerBottom
+input
+{
+    float:left;
+    height:30px;
+    margin-left:40px;
+}
+
+label
+{
+    float:left;
+    margin-left:20px;
+    text-align:left;
+    resize: none;
+    font-size: 15pt;
+    color: white;
+    background: transparent;
+    font-family: 'Verdana',sans-serif;
+}

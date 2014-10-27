@@ -12,6 +12,7 @@ Thumbs.db
 # Compiled and Temp Stuff
 dist
 src/temp
+public
 
 # Dependency directory
 node_modules

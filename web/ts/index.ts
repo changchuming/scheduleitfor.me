@@ -8,6 +8,7 @@ window.$ = window.jQuery = $;
 
 require('jquery-ui');
 require('jquery-ui-touch-punch');
+require('bootstrap');
 
 // Global variables
 var startDay = moment(),

@@ -4,6 +4,7 @@ var $ = require('jquery'), moment = require('moment');
 window.$ = window.jQuery = $;
 require('jquery-ui');
 require('jquery-ui-touch-punch');
+require('bootstrap');
 // Global variables
 var startDay = moment(), MODE_TIME = 0, MODE_DATE = 1, currentMode = MODE_TIME, weekdayHeader; // Header of calendar
 // Time
