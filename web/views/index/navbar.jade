@@ -1,0 +1,15 @@
+mixin navbar
+    nav.navbar.navbar-default(role="navigation")
+          .container-fluid
+            .navbar-header
+              button.navbar-toggle.collapsed(data-toggle="collapse" data-target="#collapsed-navbar")
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+              a.navbar-brand(href="#") Brand
+
+            .collapse.navbar-collapse(id="collapsed-navbar")
+              ul.nav.navbar-nav
+                li.active
+                  a(href="#") link
