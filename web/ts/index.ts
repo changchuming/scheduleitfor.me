@@ -67,7 +67,7 @@ $(function() {
 	$('#anonymous').prop('checked', true);
 	$('#previous').attr('disabled', true); // Disable previous button
 
-	eventList.initialize();
+	durationSelector.initialize();
 
 	if (currentMode == _mode.byTime) {
 		$.initializeTimeCalendar();
@@ -77,22 +77,22 @@ $(function() {
 	}
 });
 
-// EventList Code
-var eventList = {
+// DurationSelector allows the user to select the duration of the event
+var durationSelector = {
 	initialize: function(){
 		this.create(currentMode);
 		this.listenForEvents();
 	},
 
 	create: function(currMode: number) : void{
-		var $eventLengthSection = $('#currentEventLength');;
+		var $durationSelector = $('#currentEventLength');;
 
-		setTitle($eventLengthSection, currMode);
-		createDurationSelector($eventLengthSection);
+		setTitle($durationSelector, currMode);
+		createItems($durationSelector);
 
+		// Sets the Title for the Duration Selector
 		function setTitle($section, currMode: number){
 			var template = '<h3> {0} {1}</h3>';
-			// Set Event Length Title
 			if(currMode == _mode.byDate){
 				$section.html(template.format(currentEventLength, 'day(s)'));
 			}
@@ -101,15 +101,16 @@ var eventList = {
 			}
 		}
 
-		function createDurationSelector($eventLengthSection){
-			var $eventLengthList = $('<ol id="eventLengthList"></ol>'),
+		// Creates the items that can be selected and appends it to DOM
+		function createItems($durationSelector){
+			var $durationSelectorList = $('<ol id="eventLengthList"></ol>'),
 				$eventItems = "";
 
 			for (var i = 1; i <= 14; i++) {
 				$eventItems += '<li class="ui-state-default" length ="{0}">{0}</li>'.format(i);
 			}
 
-			$eventLengthSection.append($eventLengthList.append($eventItems));
+			$durationSelector.append($durationSelectorList.append($eventItems));
 		}
 	},
 
