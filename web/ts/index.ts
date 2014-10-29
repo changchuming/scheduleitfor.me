@@ -10,34 +10,36 @@ require('jquery-ui');
 require('jquery-ui-touch-punch');
 require('bootstrap');
 
+initializeUtilityFunctions();
+
 // Global variables
 var startDay = moment(),
-	MODE_TIME = 0,
-	MODE_DATE = 1,
-	currentMode = MODE_TIME,
+	_mode = { // Refers to the selectionMode
+		byTime: 0,
+		byDate: 1,
+	},
+	currentMode = _mode.byTime,
 	weekdayHeader;  // Header of calendar
 
 // Time
-var MAX_WEEKS = 26;
-var DAYS_IN_WEEK = 7;
-var UNITS_IN_DAY = 24;
-var startWeekIndex = startDay.week();
-var currentWeekIndex = startWeekIndex;
-var timeArray = new Array();
+var MAX_WEEKS = 26,
+	DAYS_IN_WEEK = 7,
+	UNITS_IN_DAY = 24,
+	startWeekIndex = startDay.week(),
+	currentWeekIndex = startWeekIndex,
+	timeArray = [];
 
 // Date
-var MAX_MONTHS = 6;
-var startMonthIndex = startDay.month(); // Set start month of calendar to this month
-var currentMonthIndex = startMonthIndex; // Set current month to this month
-var dateArray = new Array(); // Array of dates selected
+var MAX_MONTHS = 6,
+	startMonthIndex = startDay.month(), // Set start month of calendar to this month
+	currentMonthIndex = startMonthIndex, // Set current month to this month
+	dateArray = new Array(); // Array of dates selected
 
 // Event length
 var MAX_LENGTH = 14;
 var currentEventLength = 1;
 
-//-----------------------------------------------------------------------------------------------
 // Default functions for selectables
-//-----------------------------------------------------------------------------------------------
 var selectableDefaults = {
 	selected: function (event, ui) {
 	    if ($(ui.selected).hasClass('chosenfilter')) {
@@ -60,78 +62,89 @@ var selectableDefaults = {
 	}
 };
 
-//###############################################################################################
-// On document ready, initialize calendar
-//###############################################################################################
-$().ready(function() {
+// Initialization
+$(function() {
 	$('#anonymous').prop('checked', true);
 	$('#previous').attr('disabled', true); // Disable previous button
-	$.initializeEventLength();
-	if (currentMode == MODE_TIME) {
+
+	eventList.initialize();
+
+	if (currentMode == _mode.byTime) {
 		$.initializeTimeCalendar();
 	}
-	else if (currentMode == MODE_DATE) {
+	else if (currentMode == _mode.byDate) {
 		$.initializeDateCalendar();
 	}
 });
 
-//###############################################################################################
-// Initialize length of event
-//###############################################################################################
-$.initializeEventLength = function() {
-	if (currentMode==MODE_DATE) {
-		$('#currenteventlength').html('<h3>'+currentEventLength+' day(s)</h3>'); // Display current event length
-	}
-	else if (currentMode==MODE_TIME) {
-		$('#currenteventlength').html('<h3>'+currentEventLength+' hour(s)</h3>'); // Display current event length
-	}
+// EventList Code
+var eventList = {
+	initialize: function(){
+		this.create(currentMode);
+		this.listenForEvents();
+	},
 
-	var eventLengthList = $('<ol id="eventlengthlist"></ol>'); // Selectable list
-	for (var i=1;i<=14;i++) {
-		var eventLengthListItem = $('<li class="ui-state-default">'+i+'</li>');
-		eventLengthListItem.attr('length', i);
-		eventLengthList.append(eventLengthListItem); // Populate list
+	create: function(currMode: number) : void{
+		var $eventLengthSection = $('#currentEventLength');;
+
+		setTitle($eventLengthSection, currMode);
+		createDurationSelector($eventLengthSection);
+
+		function setTitle($section, currMode: number){
+			var template = '<h3> {0} {1}</h3>';
+			// Set Event Length Title
+			if(currMode == _mode.byDate){
+				$section.html(template.format(currentEventLength, 'day(s)'));
+			}
+			else if(currMode == _mode.byTime){
+				$section.html(template.format(currentEventLength, 'hour(s)'));
+			}
+		}
+
+		function createDurationSelector($eventLengthSection){
+			var $eventLengthList = $('<ol id="eventLengthList"></ol>'),
+				$eventItems = "";
+
+			for (var i = 1; i <= 14; i++) {
+				$eventItems += '<li class="ui-state-default" length ="{0}">{0}</li>'.format(i);
+			}
+
+			$eventLengthSection.append($eventLengthList.append($eventItems));
+		}
+	},
+
+	listenForEvents: function(): void{
+		//Enable selection + drag and drop of duration
+		$('#eventLengthList').bind('mousedown', function (e){
+		    e.metaKey = true;
+		})
+		.selectable({
+			selected: function (event, ui) {
+				selectableDefaults.selected(event, ui);
+				currentEventLength = parseInt($(ui.selected).attr('length')); // Copies temporary length to event length
+			},
+			selecting: function (event, ui) {
+				selectableDefaults.selecting(event, ui);
+			},
+			unselecting: function (event, ui) {
+				selectableDefaults.unselecting(event, ui);
+			}
+		});
+
+		// Change mode on mouse up
+		$('#eventLength').on('mouseup', '.mode', function(event) {
+			currentMode = $(this).attr('mode');
+			if (currentMode == _mode.byTime) {
+				$.initializeTimeCalendar();
+			}
+			else if (currentMode == _mode.byDate) {
+				$.initializeDateCalendar();
+			}
+		})
 	}
-	$('#eventlength').html(eventLengthList); // Put list into div
 }
 
-//###############################################################################################
-// Set options of eventLengthList
-//###############################################################################################
-$(function() {
-	$('#eventlengthlist').bind('mousedown', function (e){
-	    e.metaKey = true;
-	})
-	.selectable({
-		selected: function (event, ui) {
-			selectableDefaults.selected(event, ui);
-			currentEventLength = parseInt($(ui.selected).attr('length')); // Copies temporary length to event length
-		},
-		selecting: function (event, ui) {
-			selectableDefaults.selecting(event, ui);
-		},
-		unselecting: function (event, ui) {
-			selectableDefaults.unselecting(event, ui);
-		}
-	});
-});
-
-//###############################################################################################
-// Attach mouse events to mode selection boxes
-//###############################################################################################
-$('#eventlength').on('mouseup', '.mode', function(event) {
-	currentMode = $(this).attr('mode');
-	if (currentMode == MODE_TIME) {
-		$.initializeTimeCalendar();
-	}
-	else if (currentMode == MODE_DATE) {
-		$.initializeDateCalendar();
-	}
-})
-
-//###############################################################################################
 // Initialize date calendar on page
-//###############################################################################################
 $.initializeDateCalendar = function(){
 	// Month title
 	$('#title').html(moment.months(currentMonthIndex));
@@ -171,9 +184,7 @@ $.initializeDateCalendar = function(){
 	$('#calendar').append(dateList);
 }
 
-//###############################################################################################
 // Set options of dateList
-//###############################################################################################
 $(function() {
 	$('#datelist').bind('mousedown', function (e){
 	    e.metaKey = true;
@@ -207,9 +218,7 @@ $(function() {
 	});
 });
 
-//###############################################################################################
 // Initialize time calendar on page
-//###############################################################################################
 $.initializeTimeCalendar = function() {
 	// Month title
 	var startDayOfWeek = moment(startDay).week(currentWeekIndex).day(0);
@@ -246,9 +255,7 @@ $.initializeTimeCalendar = function() {
 	$('#calendar').append(timeList);
 }
 
-//###############################################################################################
 // Set options of timeList
-//###############################################################################################
 $(function() {
 	$('#timelist').bind('mousedown', function (e){
 	    e.metaKey = true;
@@ -283,9 +290,7 @@ $(function() {
 	});
 });
 
-//###############################################################################################
 // Get start date index of month
-//###############################################################################################
 $.getStartDateIndex = function(monthIndex) {
 	var dateIndex = 0;
 	// Adds all dates of previous month
@@ -295,11 +300,9 @@ $.getStartDateIndex = function(monthIndex) {
 	return dateIndex;
 }
 
-//###############################################################################################
 //On previous button clicked, change month to previous month
-//###############################################################################################
 $('#previous').click(function() {
-	if (currentMode == MODE_DATE) {
+	if (currentMode == _mode.byDate) {
 		currentMonthIndex--; // Change current month to previous month
 		$.initializeDateCalendar();
 		// Enables next button
@@ -309,7 +312,7 @@ $('#previous').click(function() {
 			$(this).attr('disabled', true);
 		}
 	}
-	else if (currentMode == MODE_TIME) {
+	else if (currentMode == _mode.byTime) {
 		currentWeekIndex--; // Change current month to previous month
 		// Change title of calendar and header
 		var startDayOfWeek = moment(startDay).week(currentWeekIndex).day(0);
@@ -331,11 +334,9 @@ $('#previous').click(function() {
 	}
 });
 
-//###############################################################################################
 //On next button clicked, change month to previous month
-//###############################################################################################
 $('#next').click(function() {
-	if (currentMode == MODE_DATE) {
+	if (currentMode == _mode.byDate) {
 		currentMonthIndex++; // Change current month to next month
 		$.initializeDateCalendar();
 		// Enables previous button
@@ -345,7 +346,7 @@ $('#next').click(function() {
 			$(this).attr('disabled', true);
 		}
 	}
-	else if (currentMode == MODE_TIME) {
+	else if (currentMode == _mode.byTime) {
 		currentWeekIndex++; // Change current month to next month
 		// Change title of calendar and header
 		var startDayOfWeek = moment(startDay).week(currentWeekIndex).day(0);
@@ -367,9 +368,7 @@ $('#next').click(function() {
 	}
 });
 
-//###############################################################################################
 // Resets time calendar
-//###############################################################################################
 $.resetTimeCalendar  = function() {
 	var startTimeIndex=(currentWeekIndex-startWeekIndex)*DAYS_IN_WEEK*UNITS_IN_DAY;
 	for (var i=1; i<=UNITS_IN_DAY;i++) {
@@ -389,13 +388,11 @@ $.resetTimeCalendar  = function() {
 	}
 }
 
-//###############################################################################################
 // Create schedule
 // Shows overlay with success/failure message
-//###############################################################################################
 $('#create').click(function() {
 	// Check that dates or time are selected, if not, warn user
-	if ((currentMode==MODE_DATE && dateArray.length==0) || (currentMode==MODE_TIME && timeArray.length==0)) {
+	if ((currentMode == _mode.byDate && dateArray.length==0) || (currentMode == _mode.byTime && timeArray.length==0)) {
 		$('#overlay').height($(document).height());
 		$('#overlay').css('visibility', 'visible');
 		$('#alert').html('</br></br> Please select range</br>of available dates/time');
@@ -404,10 +401,10 @@ $('#create').click(function() {
 	}
 	// If selected, create schedule
 	else {
-		if (currentMode==MODE_DATE) {
+		if (currentMode == _mode.byDate) {
 			var selectedArray = dateArray;
 		}
-		else if (currentMode==MODE_TIME) {
+		else if (currentMode == _mode.byTime) {
 			var selectedArray = timeArray;
 		}
 		$.ajax({
@@ -436,10 +433,26 @@ $('#create').click(function() {
 	}
 });
 
-//###############################################################################################
 // Removes overlay when clicked
-//###############################################################################################
 $('#overlay').mouseup(function() {
 	$(this).css('visibility', 'hidden');
 	$('#alert').css('visibility', 'hidden');
 });
+
+interface String {
+    format(...replacements: any[]): string;
+}
+
+function initializeUtilityFunctions()
+{
+	if (!String.prototype.format) {
+		String.prototype.format = function() {
+		var args = arguments;
+		return this.replace(/{(\d+)}/g, function(match, number){
+			return typeof args[number] != 'undefined'
+				? args[number]
+				: match;
+			});
+		};
+	}
+}

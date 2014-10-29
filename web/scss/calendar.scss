@@ -5,39 +5,6 @@
  * Chris Coyier
  -----------------------------*/
 
-/* Event length list */
-#eventlengthlist .ui-selecting
-{
-	background: #FECA40;
-}
-#eventlengthlist .ui-selected
-{
-	background: #F39814;
-	color: white;
-}
-#eventlengthlist .ui-unselecting
-{
-	background: #c0c0c0;
-}
-#eventlengthlist
-{
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	width: 800px;
-	height: 150px;
-}
-#eventlengthlist li
-{
-	margin: 3px;
-	padding: 1px;
-	float: left;
-	width: 100px;
-	height: 80px;
-	font-size: 4em;
-	text-align: center;
-}
-
 /* Date list */
 #datelist .ui-selecting {
 	background: #FECA40;

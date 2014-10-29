@@ -45,3 +45,5 @@ gulp.task('scripts', ['typescript'], function(){
         }))
         .on('error', function(error){console.log(error)});
 })
+
+//.pipe(plugins.streamify(plugins.uglify()))

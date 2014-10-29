@@ -12,7 +12,6 @@ redis
 
 # Compiled and Temp Stuff
 dist
-**/web/temp
 public
 
 # Dependency directory
