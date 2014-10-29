@@ -8,10 +8,11 @@ logs
 Thumbs.db
 
 # Runtime data
+redis
 
 # Compiled and Temp Stuff
 dist
-src/temp
+**/web/temp
 public
 
 # Dependency directory
