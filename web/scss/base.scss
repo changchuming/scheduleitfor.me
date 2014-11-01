@@ -1,5 +1,6 @@
-@import './lib/bootstrap-theme.min';
-@import './lib/bootstrap.min';
+@import './lib/bootstrap/dist/css/bootstrap-theme.min';
+@import './lib/bootstrap/dist/css/bootstrap.min';
+@import './lib/jquery-ui/themes/smoothness/jquery-ui.min';
 @import './components/navbar';
 
 body{

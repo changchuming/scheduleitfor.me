@@ -1,15 +1,18 @@
-$bgDefault      : #efefef;
+$bgDefault      : white;
 $bgHighlight    : #dbdbdb;
 $colDefault     : #969696;
 $colHighlight   : #000000;
+
 .navbar{
     border-radius: 0px;
+    margin-bottom: 0px;
 }
 
 .navbar-default {
     background-color: $bgDefault;
     border-color: $bgHighlight;
     border-radius: 0px;
+    background-image: none;
     .navbar-brand {
         color: $colDefault;
         &:hover, &:focus {

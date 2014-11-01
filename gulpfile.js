@@ -25,5 +25,5 @@ gulp.task('default', [
     'clean:css',
     'images',
     'scripts',
-    'styles',
+    'styles:init',
     'watch'], function(){});

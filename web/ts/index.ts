@@ -87,17 +87,17 @@ var durationSelector = {
 	create: function(currMode: number) : void{
 		var $durationSelector = $('#currentEventLength');;
 
-		setTitle($durationSelector, currMode);
 		createItems($durationSelector);
+		setTitle($durationSelector, currMode);
 
 		// Sets the Title for the Duration Selector
 		function setTitle($section, currMode: number){
 			var template = '<h3> {0} {1}</h3>';
 			if(currMode == _mode.byDate){
-				$section.html(template.format(currentEventLength, 'day(s)'));
+				$section.append(template.format(currentEventLength, 'day(s)'));
 			}
 			else if(currMode == _mode.byTime){
-				$section.html(template.format(currentEventLength, 'hour(s)'));
+				$section.append(template.format(currentEventLength, 'hour(s)'));
 			}
 		}
 
@@ -110,7 +110,7 @@ var durationSelector = {
 				$eventItems += '<li class="ui-state-default" length ="{0}">{0}</li>'.format(i);
 			}
 
-			$durationSelector.append($durationSelectorList.append($eventItems));
+			$durationSelector.html($durationSelectorList.append($eventItems));
 		}
 	},
 
