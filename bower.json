@@ -21,6 +21,11 @@
     "moment": "~2.8.3",
     "jquery-ui-touch-punch": "master",
     "jquery-ui": "~1.11.2",
-    "bootstrap": "~3.2.0"
+    "bootstrap": "~3.3.0",
+    "knockout": "~3.2.0",
+    "seiyria-bootstrap-slider": "~4.3.0"
+  },
+  "resolutions": {
+    "bootstrap": "~3.3.0"
   }
 }

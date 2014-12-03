@@ -1,57 +1,25 @@
 include ./index/navbar.jade
+include ./index/calendar.jade
+include ./index/eventdetails.jade
+include ./index/eventduration.jade
 
 extends layout
 
 block styles
-    link(rel='stylesheet', href='/css/index.css')
-
+    link(rel='stylesheet', href='/css/start.css')
 block content
-    #overlay
-    #alert
     +navbar
-    center
-      #container.container-fluid
-        .row
-          h1 Scheduling Events Made Easy
-        .row
-          .col-md-4
-            .row
-              #containertop
-                  .row
-                  h2 What's Your Event About ?
-
-                  form.form-horizontal(role="form")
-                    .form-group
-                      label.control-label.col-sm-2(for="name") Title
-                      .col-sm-10
-                        input.form-control#name(name='name', placeholder='Max\'s birthday party' maxlength='100', type='text')
-                    .form-group
-                      label.control-label.col-sm-2(for="details") Details
-                      .col-sm-10
-                        textarea.form-control#details(name='details', placeholder='Dinner @ The Esplanade', maxlength='200', type='text')
-                  br
-                  br
-                  h2 How Long Is It?
-                  #currentEventLength
-                  #eventLength
-                  br
-                  br
-            .row
-              #containerbottom
-                h2 Options
-                input#anonymous(type='checkbox', name='anonymous')
-                label Anonymous
-                input#multiple(type='checkbox', name='multiple')
-                label Multiple Votes from Same User
-                #containercreate
-                  button.btn.btn-default#create Create
-          #containercenter.col-md-8
-            h2 Drag to select range of available dates
-            #header
-              #title
-              button#previous <
-              button#next >
-            #calendar
-          br
+    .content.container-fluid
+      .row
+        h4.capitalized-header What's the Event
+      .row
+        +eventdetails
+      .row
+        h4.capitalized-header When can it happen?
+      .row
+        +calendar
+      .row
+        h4.capitalized-header How long will it be?
+        +eventduration
 block footer
-      script(src='/js/index.js', type='text/javascript')
+      script(src='/js/start.js', type='text/javascript')

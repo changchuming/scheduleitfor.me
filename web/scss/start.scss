@@ -1,0 +1,21 @@
+@import './components/cal';
+@import './lib/seiyria-bootstrap-slider/css/bootstrap-slider';
+
+.form-group{
+    label {
+        text-align: center;
+        float:none;
+        display: inline-block;
+    }
+}
+
+.content{
+    margin: 15px;
+}
+
+.capitalized-header {
+    font-family: 'JunctionBold';
+    color: #1E1D1D;
+    text-align: center;
+    font-size: 90%;
+}

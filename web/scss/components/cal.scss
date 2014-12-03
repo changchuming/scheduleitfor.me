@@ -1,0 +1,74 @@
+.calendar {
+    overflow: hidden;
+    margin: 10px 0px 0px 0px;
+}
+.cal_row {
+    overflow: hidden;
+
+    > div {
+        width: 14%;
+        height: 100px;
+        float: left;
+        display: block;
+        background: #fff;
+        border-bottom: 1px solid #e6e6e6;
+        border-right: 1px solid #e6e6e6;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+
+        i {
+            padding: 2px 0 0 4px;
+            display: block;
+            color: #222;
+        }
+
+        a {
+            font-size: 11px;
+            padding: 4px;
+            line-height: 6px;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background: #f9f9f9;
+        }
+
+        &:first-child, &:nth-child(7n+8) {
+            border-left: 1px solid #e6e6e6;
+        }
+    }
+
+    .prev_month i, .next_month i{
+        color: #999;
+    }
+
+    .has_event {
+        background: #f9f9f9;
+    }
+}
+
+.day_names.cal_row {
+    > div {
+        background: none;
+        font-weight: bold;
+        height: auto;
+        text-align: center;
+        font-weight: bold;
+        padding-bottom: 5px;
+        border: none;
+
+        &:hover{
+            cursor: inherit;
+        }
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .day_names.cal_row > div span {
+        display: none;
+    }
+    .cal_row > div {
+        height: 60px;
+    }
+}

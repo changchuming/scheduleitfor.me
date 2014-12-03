@@ -27,7 +27,6 @@ gulp.task('styles:init', ['copy:csslib'],function(){styles();});
 gulp.task('styles', ['clean:css'],function(){styles();});
 
 function styles(){
-    console.log('hi');
     gulp.src(sources.sass_in)
         .pipe(plugins.plumber())
         .pipe(plugins.sass({errLogToConsole: true}))

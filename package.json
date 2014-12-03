@@ -9,7 +9,6 @@
     "express": "^3.2.6",
     "express.io": "^1.1.13",
     "jade": "*",
-    "jquery-ui-touch-punch": "^0.2.3",
     "redis": "^0.12.1"
   },
   "devDependencies": {
@@ -20,12 +19,13 @@
     "gulp": "^3.8.8",
     "gulp-copy": "0.0.2",
     "gulp-foreach": "0.0.1",
-    "gulp-imagemin": "^1.1.0",
+    "gulp-imagemin": "^1.2.1",
     "gulp-livereload": "^2.1.1",
     "gulp-load-plugins": "^0.7.0",
+    "gulp-newer": "^0.5.0",
     "gulp-plumber": "^0.6.6",
     "gulp-rename": "^1.2.0",
-    "gulp-sass": "^1.2.0",
+    "gulp-sass": "^1.2.3",
     "gulp-streamify": "0.0.5",
     "gulp-tsc": "^0.9.2",
     "gulp-uglify": "^1.0.1",

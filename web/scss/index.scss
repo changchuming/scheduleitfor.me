@@ -6,6 +6,15 @@ h1{
     font-weight: bold;
 }
 
+.content{
+    padding: 42px 0px 215px 0px;
+}
+
+.page-title{
+    color: #3a3a3a;
+    padding: 18px;
+}
+
 /* Event length list */
 #eventLengthList{
     list-style-type: none;
@@ -92,50 +101,51 @@ h1{
 //ContainerCenter
 button#previous
 {
-    float:left;
-    margin-left:40px;
-    font-size: 15pt;
-    height: 50px;
-    border: 0;
-    color: #fff;
-    background: #444;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    font-family: 'Sigmar One', sans-serif;
-    cursor: pointer;
-    text-decoration: none;
-    padding: 0px 6px;
-    display: inline-block;
-    position: relative;
-}
-button#previous:disabled
-{
-    color: #222;
-}
+    #previous{
+        float:left;
+        margin-left:40px;
+        font-size: 15pt;
+        height: 50px;
+        border: 0;
+        color: #fff;
+        background: #444;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        font-family: 'Sigmar One', sans-serif;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0px 6px;
+        display: inline-block;
+        position: relative;
 
-button#next
-{
-    float:right;
-    margin-right:40px;
-    font-size: 15pt;
-    height: 50px;
-    border: 0;
-    color: #fff;
-    background: #444;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    font-family: 'Sigmar One', sans-serif;
-    cursor: pointer;
-    text-decoration: none;
-    padding: 0px 6px;
-    display: inline-block;
-    position: relative;
-}
-button#next:disabled
-{
-    color: #222;
+        &:disabled {
+            color: #222;
+        }
+    }
+
+    #next{
+        float:right;
+        margin-right:40px;
+        font-size: 15pt;
+        height: 50px;
+        border: 0;
+        color: #fff;
+        background: #444;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        font-family: 'Sigmar One', sans-serif;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0px 6px;
+        display: inline-block;
+        position: relative;
+
+        &:disabled{
+            color: #222;
+        }
+    }
 }
 
 #title

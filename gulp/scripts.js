@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
     plugins = require('gulp-load-plugins')(),
     gutil = require('gulp-util'),
-    sources = require('./config.json').sources,
+    config = require('./config.json'),
+    sources = config.sources,
     browserify = require('browserify'),
     source = require('vinyl-source-stream'),
     debowerify = require('debowerify'),
@@ -20,7 +21,8 @@ gulp.task('clean:dist_js', function(cb){
 
 // Typescript
 gulp.task('typescript', ['clean:temp_js'], function(cb){
-    return gulp.src(sources.ts_in)
+    if(!config.isVisualStudio){
+        return gulp.src(sources.ts_in)
         .pipe(plugins.plumber())
         .pipe(plugins.tsc({
             sourcemap: false,
@@ -29,6 +31,11 @@ gulp.task('typescript', ['clean:temp_js'], function(cb){
         }))
         .on('error', function(error){console.log(error)})
         .pipe(gulp.dest(sources.ts_out));
+    }
+    else
+    {
+        return gulp.src(sources.js_in);
+    }
 })
 
 // Bundles Javascript into a Single Bundle
@@ -41,9 +48,10 @@ gulp.task('scripts', ['typescript'], function(){
             .transform('debowerify')
             .bundle()
             .pipe(source('./' + path.basename(file.path)))
+            .pipe(plugins.streamify(plugins.uglify()))
             .pipe(gulp.dest(sources.build_dir + "/js"));
         }))
         .on('error', function(error){console.log(error)});
 })
 
-//.pipe(plugins.streamify(plugins.uglify()))
+//

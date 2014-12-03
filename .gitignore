@@ -17,6 +17,10 @@ public
 # Dependency directory
 node_modules
 bower_components
+web/scss/lib
 
 # Users Environment Variables
 .lock-wscript
+
+# Visual Studio Files
+*.njsproj

@@ -4,7 +4,17 @@ Step 1: Install missing packages and dependencies
 > npm install
 > bower install
 ```
-Step 2: Build Files and Start Watch
+
+Step 2: Edit `./gulp/config.json` to indicate whether you are using Visual Studio
+
+```json
+{
+    // Other Stuff Above
+    "isVisualStudio" : true // Indicate whether you are using VisualStudio typescript or not.
+}
+```
+
+Step 3: Build Files and Start Watch
 
 Type the following :
 

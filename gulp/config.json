@@ -8,6 +8,9 @@
         "ts_out": "./web/temp",
         "js_in": "./web/temp/*.js",
         "images": "./web/img/**/*",
-        "images_out": "./public/images"
-    }
+        "images_out": "./public/images",
+        "fonts": "./web/fonts/**/*",
+        "fonts_out": "./public/fonts"
+    },
+    "isVisualStudio" : true
 }

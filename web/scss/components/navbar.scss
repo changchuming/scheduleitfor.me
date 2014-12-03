@@ -6,6 +6,8 @@ $colHighlight   : #000000;
 .navbar{
     border-radius: 0px;
     margin-bottom: 0px;
+    font-family: 'JunctionBold';
+    font-weight: light;
 }
 
 .navbar-default {
@@ -46,7 +48,17 @@ $colHighlight   : #000000;
         color: $colDefault;
         &:hover {
             color: $colHighlight; }}}
+
 @media (max-width: 767px) {
+    .navbar-brand {
+        float: none;
+        display: inline-block;
+    }
+
+    .navbar-header {
+        text-align: center;
+    }
+
     .navbar-default .navbar-nav .open .dropdown-menu {
         > li > a {
             color: $colDefault;
