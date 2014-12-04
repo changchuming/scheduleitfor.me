@@ -58,7 +58,7 @@ scheduleitforme
         - views
         - ts // Script files for Respective Views
         - scss // Styles for Respective Views
-        - temp // Temporary folder for compilation of various files
+        - js // Temporary folder for compilation of Typescript Files
 
     - app.js // Starting point for the entire application
 ```

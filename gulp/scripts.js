@@ -11,7 +11,13 @@ var gulp = require('gulp'),
 
 // Cleanup Temp Folder of Compiled Typescript
 gulp.task('clean:temp_js', function(cb){
-    return del(sources.ts_out + '/**/*',cb);
+    if(!config.isVisualStudio){
+        return del(sources.ts_out + '/**/*',cb);
+    }
+    else
+    {
+        return gulp.src(sources.ts_out);
+    }
 });
 
 // Cleanup Temp Folder of Bundled Javascript
@@ -42,13 +48,12 @@ gulp.task('typescript', ['clean:temp_js'], function(cb){
 gulp.task('scripts', ['typescript'], function(){
     return gulp.src(sources.js_in)
         .pipe(plugins.plumber())
-        .pipe(plugins.foreach(function(steam,file){
-            return browserify(file)
+        .pipe(plugins.foreach(function(stream,file){
+        return browserify(file)
             .on('error',gutil.log.bind(gutil, "browserify error: "))
             .transform('debowerify')
             .bundle()
-            .pipe(source('./' + path.basename(file.path)))
-            .pipe(plugins.streamify(plugins.uglify()))
+            .pipe(source('./' + path.basename(file.path))) //.pipe(plugins.streamify(plugins.uglify()))
             .pipe(gulp.dest(sources.build_dir + "/js"));
         }))
         .on('error', function(error){console.log(error)});

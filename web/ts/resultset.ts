@@ -1,5 +1,5 @@
 /// <reference path="../definitions/browserify.d.ts" />
-var $ = require('jquery'),
+var $ : JQueryStatic = require('jquery'),
 	moment = require('moment');
 
 // Shim jQuery

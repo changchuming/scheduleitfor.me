@@ -24,3 +24,6 @@ web/scss/lib
 
 # Visual Studio Files
 *.njsproj
+obj
+*.sln
+*.ntvs_analysis.dat
