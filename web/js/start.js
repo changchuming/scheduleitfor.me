@@ -1,8 +1,11 @@
 /// <reference path="../definitions/jquery.d.ts" />
+/// <reference path="../definitions/jqueryui.d.ts" />
+/// <reference path="../definitions/touchpunch.d.ts" />
 /// <reference path="../definitions/knockout.d.ts" />
 /// <reference path="../definitions/bootstrap-slider.d.ts" />
 /// <reference path="../definitions/browserify.d.ts" />
 /// <reference path="../definitions/moment.d.ts" />
+/// <reference path="../definitions/jqueryui.d.ts" />
 /// <reference path="./components/calendar.ts" />
 // Shim JQuery
 var $ = require("jquery");
@@ -11,6 +14,7 @@ window.$ = window.jQuery = $;
 var ko = require('knockout');
 var moment = require('moment');
 // Load Plugins without Type Definitions
+var jqueryui = require('jquery-ui');
 var slider = require("seiyria-bootstrap-slider");
 var bootstrap = require('bootstrap');
 var cal = require('./web/js/components/calendar');
@@ -22,6 +26,7 @@ $(function () {
 });
 function init_slider() {
     $("#EventDurationSlider").slider();
+    $.ui.version;
 }
 function init_calendar() {
     ko.applyBindings(calVm);

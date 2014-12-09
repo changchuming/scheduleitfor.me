@@ -4,19 +4,19 @@ mixin calendar
       div Mon
         span day
       div Tue
-        span day
-      div Wednes
-        span day
+        span sday
+      div Wed
+        span nesday
       div Thur
-        span day
+        span sday
       div Fri
         span day
       div Sat
-        span day
+        span urday
       div Sun
         span day
     .cal_row(data-bind="foreach: Days")
       div(data-bind="css: MonthStatus")
-        i(data-bind="text: Day")
+        i(data-bind="text: DayText")
 
 

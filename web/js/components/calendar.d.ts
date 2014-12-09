@@ -6,19 +6,21 @@ export interface ICalendarDay {
     MonthStatus: KnockoutComputed<string>;
     IsSelected: boolean;
     CalDate: Date;
-    Day: number;
+    DayText: string;
 }
 export interface ICalendar {
     Days: KnockoutObservableArray<ICalendarDay>;
 }
 export declare class CalendarDay implements ICalendarDay {
     CalDate: Date;
-    Day: number;
+    DayText: string;
     IsSelected: boolean;
     MonthStatus: KnockoutComputed<string>;
     onSelect(): void;
-    constructor(CalDate: Date, Day?: number, IsSelected?: boolean);
+    OnTap(bindingContext: KnockoutBindingContext): void;
+    constructor(CalDate: Date, DayText?: string, IsSelected?: boolean);
     private _monthStatus();
+    private _getDayText();
 }
 export declare class CalendarVm implements ICalendar {
     private _aroundThisDate;

@@ -3,6 +3,7 @@
 /// <reference path="../../definitions/browserify.d.ts" />
 /// <reference path="../../definitions/moment.d.ts" />
 
+
 import moment = require('moment');
 import ko = require('knockout');
 
@@ -10,7 +11,7 @@ export interface ICalendarDay {
     MonthStatus: KnockoutComputed<string>;
     IsSelected: boolean;
     CalDate: Date;
-    Day: number;
+    DayText: string;
 }
 
 export interface ICalendar {
@@ -24,10 +25,15 @@ export class CalendarDay implements ICalendarDay {
         this.IsSelected = this.IsSelected ? true : false;
     }
 
+    public OnTap(bindingContext : KnockoutBindingContext) {
+        console.log("hi");
+    }
+
     constructor(public CalDate: Date,
-        public Day : number = 0,
+        public DayText : string = "",
         public IsSelected: boolean = false) {
-        this.Day = CalDate.getDate();
+        //Initialization
+        this.DayText = this._getDayText();
         this.MonthStatus = ko.pureComputed(() => {
             return this._monthStatus();
         });
@@ -35,15 +41,34 @@ export class CalendarDay implements ICalendarDay {
 
     private _monthStatus(): string {
         var status: string = "";
+        var today = moment();
 
-        if (moment().isAfter(this.CalDate, "month")) {
+        if (moment(today).isAfter(this.CalDate, "month")) {
             status = "prev_month";
         }
-        else if (moment().isBefore(this.CalDate, "month")) {
+        else if (moment(today).isBefore(this.CalDate, "month")) {
             status = "next_month";
         }
 
         return status;
+    }
+
+    // Returns the text that will be displayed on the calendar
+    // based on the current date
+    private _getDayText(): string {
+        var startOfNextMonth = moment(new Date())
+            .add(1, "month")
+            .startOf("month");        
+        var result = "";
+
+        // If the date is either at the start of the month,
+        // add the month's name before it
+        if (moment(this.CalDate).isSame(startOfNextMonth)) {
+            result += moment(this.CalDate).format("MMM") + " ";
+        }
+
+        result += this.CalDate.getDate();
+        return result;
     }
 }
 
@@ -59,9 +84,10 @@ export class CalendarVm implements ICalendar {
         return selectedDates;
     }
 
-    constructor(private _aroundThisDate: Date = moment().toDate(),
+    constructor(private _aroundThisDate: Date = new Date(),
         private _days: ICalendarDay[]= [],
         public Days: KnockoutObservableArray<ICalendarDay> = ko.observableArray([])) {
+        // Initialize Variables
         this._days = this.createCalendarDays(this._aroundThisDate);
         this.Days = ko.observableArray(this._days);
     }
@@ -71,6 +97,7 @@ export class CalendarVm implements ICalendar {
     private createCalendarDays(AroundThisDate: Date): ICalendarDay[] {
         var startDay = moment(AroundThisDate).startOf('month'),
             endDay = moment(AroundThisDate).endOf('month'),
+            currMonth = moment(AroundThisDate).month(),
             days: ICalendarDay[] = [];
 
         //Check if the start of the month coincides with a Monday.
@@ -87,8 +114,9 @@ export class CalendarVm implements ICalendar {
         }
 
         // Create CalendarDay objects for each date
-        while (!moment(startDay).isAfter(endDay, "day")) {
-            days.push(new CalendarDay(startDay.toDate()));
+        while (!moment(startDay).isAfter(endDay, "day")) {         
+            var calDay = new CalendarDay(moment(startDay).toDate());
+            days.push(calDay);
             startDay.add(1, 'day');
         }
 
