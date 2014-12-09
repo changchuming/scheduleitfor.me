@@ -1764,7 +1764,7 @@ interface JQueryStatic {
 }
 
 declare module "jquery-ui" {
-    export = $;
+    export = jqueryui;
 }
 
-declare var $: JQueryStatic;
+declare var jqueryui: JQueryStatic;

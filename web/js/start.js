@@ -14,8 +14,8 @@ window.$ = window.jQuery = $;
 var ko = require('knockout');
 var moment = require('moment');
 // Load Plugins without Type Definitions
-var jqueryui = require('jquery-ui');
-var slider = require("seiyria-bootstrap-slider");
+jqueryui = require('jquery-ui');
+touchpunch = require('jquery-ui-touch-punch');
 var bootstrap = require('bootstrap');
 var cal = require('./web/js/components/calendar');
 //  Code starts Here
@@ -26,7 +26,7 @@ $(function () {
 });
 function init_slider() {
     $("#EventDurationSlider").slider();
-    $.ui.version;
+    //    $('.capitalized-header').draggable();
 }
 function init_calendar() {
     ko.applyBindings(calVm);

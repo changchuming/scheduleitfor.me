@@ -17,12 +17,10 @@ window.$ = window.jQuery = $;
 //Load External Dependencies
 import ko = require('knockout');
 import moment = require('moment');
-import touchpunch = require('jquery-ui-touch-punch');
-
 
 // Load Plugins without Type Definitions
-var jqueryui = require('jquery-ui');
-var slider = require("seiyria-bootstrap-slider");
+jqueryui = require('jquery-ui');
+touchpunch = require('jquery-ui-touch-punch');
 var bootstrap = require('bootstrap');
 var cal = require('./web/js/components/calendar');
 
@@ -36,7 +34,7 @@ $(function() {
 
 function init_slider() {
     $("#EventDurationSlider").slider();
-    $.ui.version;
+//    $('.capitalized-header').draggable();
 }
 
 function init_calendar() {
