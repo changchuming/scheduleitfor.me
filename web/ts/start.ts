@@ -2,11 +2,10 @@
 /// <reference path="../definitions/jqueryui.d.ts" />
 /// <reference path="../definitions/touchpunch.d.ts" />
 /// <reference path="../definitions/knockout.d.ts" />
-/// <reference path="../definitions/bootstrap-slider.d.ts" />
 /// <reference path="../definitions/browserify.d.ts" />
 /// <reference path="../definitions/moment.d.ts" />
 /// <reference path="../definitions/jqueryui.d.ts" />
-/// <reference path="./components/calendar.ts" />
+/// <reference path="../definitions/scheduleit.d.ts" />
 
 // Shim JQuery
 import $ = require("jquery");
@@ -17,26 +16,29 @@ window.$ = window.jQuery = $;
 //Load External Dependencies
 import ko = require('knockout');
 import moment = require('moment');
+require('jquery-ui');
+require('jquery-ui-touch-punch');
+require('bootstrap');
 
-// Load Plugins without Type Definitions
-jqueryui = require('jquery-ui');
-touchpunch = require('jquery-ui-touch-punch');
-var bootstrap = require('bootstrap');
+// Load Internal Dependencies
 var cal = require('./web/js/components/calendar');
+var touchEvents = require('./web/js/components/touchevents');
 
 //  Code starts Here
-var calVm = new cal.CalendarVm(moment().toDate());
 
-$(function() {
+//Initialization
+$(function () {
+    var calVm = new cal.CalendarVm(moment().toDate());
+
     init_slider();
-    init_calendar();
+    init_calendar(calVm);
 });
 
 function init_slider() {
     $("#EventDurationSlider").slider();
-//    $('.capitalized-header').draggable();
 }
 
-function init_calendar() {
-    ko.applyBindings(calVm);
+function init_calendar(viewModel) {
+    touchEvents.InitializeSelection(ko, $);
+    ko.applyBindings(viewModel);
 }

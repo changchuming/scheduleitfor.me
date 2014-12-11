@@ -2,39 +2,33 @@
 /// <reference path="../../definitions/jquery.d.ts" />
 /// <reference path="../../definitions/browserify.d.ts" />
 /// <reference path="../../definitions/moment.d.ts" />
+/// <reference path="../../definitions/scheduleit.d.ts" />
 var moment = require('moment');
 var ko = require('knockout');
-;
 var CalendarDay = (function () {
-    function CalendarDay(CalDate, DayText, IsSelected) {
+    function CalendarDay(calDate, DayText, IsSelected, CalDate) {
         var _this = this;
         if (DayText === void 0) { DayText = ""; }
-        if (IsSelected === void 0) { IsSelected = false; }
-        this.CalDate = CalDate;
+        if (IsSelected === void 0) { IsSelected = ko.observable(false); }
+        if (CalDate === void 0) { CalDate = ko.observable(new Date); }
         this.DayText = DayText;
         this.IsSelected = IsSelected;
+        this.CalDate = CalDate;
+        this.Status = ko.computed(function () {
+            var status = "";
+            status += _this._getMonthStatus();
+            status += _this._getSelectedStatus();
+            return status;
+        }, this);
+        this.onSelect = function (isSelected) {
+            _this.IsSelected(isSelected);
+        };
         //Initialization
+        this.CalDate(calDate);
         this.DayText = this._getDayText();
-        this.MonthStatus = ko.pureComputed(function () {
-            return _this._monthStatus();
-        });
     }
-    CalendarDay.prototype.onSelect = function () {
-        this.IsSelected = this.IsSelected ? true : false;
-    };
-    CalendarDay.prototype.OnTap = function (bindingContext) {
-        console.log("hi");
-    };
-    CalendarDay.prototype._monthStatus = function () {
-        var status = "";
-        var today = moment();
-        if (moment(today).isAfter(this.CalDate, "month")) {
-            status = "prev_month";
-        }
-        else if (moment(today).isBefore(this.CalDate, "month")) {
-            status = "next_month";
-        }
-        return status;
+    CalendarDay.prototype.onClick = function () {
+        this.IsSelected(!this.IsSelected());
     };
     // Returns the text that will be displayed on the calendar
     // based on the current date
@@ -46,8 +40,22 @@ var CalendarDay = (function () {
         if (moment(this.CalDate).isSame(startOfNextMonth)) {
             result += moment(this.CalDate).format("MMM") + " ";
         }
-        result += this.CalDate.getDate();
+        result += this.CalDate().getDate();
         return result;
+    };
+    CalendarDay.prototype._getMonthStatus = function () {
+        var status = "";
+        var today = moment();
+        if (moment(today).isAfter(this.CalDate(), "month")) {
+            status += "prev_month";
+        }
+        else if (moment(today).isBefore(this.CalDate(), "month")) {
+            status += "next_month";
+        }
+        return status;
+    };
+    CalendarDay.prototype._getSelectedStatus = function () {
+        return this.IsSelected() ? "ui-selected" : "";
     };
     return CalendarDay;
 })();
@@ -60,16 +68,18 @@ var CalendarVm = (function () {
         this._aroundThisDate = _aroundThisDate;
         this._days = _days;
         this.Days = Days;
+        this.SelectableOptions = {};
         this._daysInWeek = 7;
         // Initialize Variables
         this._days = this.createCalendarDays(this._aroundThisDate);
         this.Days = ko.observableArray(this._days);
     }
+    // Gets the Dates that are Selected Within this Calendar
     CalendarVm.prototype.getSelectedDates = function () {
         var selectedDates = [];
         this._days.forEach(function (day) {
             if (day.IsSelected) {
-                selectedDates.push(day.CalDate);
+                selectedDates.push(day.CalDate());
             }
         });
         return selectedDates;

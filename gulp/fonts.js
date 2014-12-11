@@ -3,7 +3,7 @@ var gulp = require('gulp'),
     sources = require('./config.json').sources;
 
 gulp.task('fonts', function(){
-    gulp.src(sources.fonts)
+    return gulp.src(sources.fonts)
         .pipe(plugins.newer(sources.fonts_out))
         .pipe(gulp.dest(sources.fonts_out));
 });

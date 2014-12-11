@@ -9,22 +9,18 @@ var gulp = require('gulp'),
     dir = requireDir('./gulp');
 
 // Watch the server for changes
-gulp.task('watch', function(){
-    var lr = plugins.livereload;
-
-    lr.listen();
-
-    gulp.watch(sources.images, ['images']).on('change', lr.changed);
-    gulp.watch(sources.sass_watch, ['styles']).on('change', lr.changed);
+gulp.task('watch', ['styles:init'],function(){
+    gulp.watch(sources.images, ['images']);
+    gulp.watch(sources.sass_watch, ['styles']);
 
     // Don't compile typescript if in visual studio mode
     if(config.isVisualStudio)
     {
-        gulp.watch(sources.js_watch, ['scripts']).on('change', lr.changed);
+        gulp.watch(sources.js_watch, ['scripts']);
     }
     else
     {
-        gulp.watch(sources.ts_in, ['scripts']).on('change', lr.changed);
+        gulp.watch(sources.ts_in, ['scripts']);
     }
 
   })
@@ -37,5 +33,4 @@ gulp.task('default', [
     'images',
     'scripts',
     'fonts',
-    'styles:init',
-    'watch'], function(){});
+    'watch'], function () { });

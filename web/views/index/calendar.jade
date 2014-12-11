@@ -1,5 +1,5 @@
 mixin calendar
-  .calendar
+  .calendar(data-bind="selectable: SelectableOptions")
     .day_names.cal_row
       div Mon
         span day
@@ -16,7 +16,9 @@ mixin calendar
       div Sun
         span day
     .cal_row(data-bind="foreach: Days")
-      div(data-bind="css: MonthStatus")
+      div.ui-state-default(data-bind="css: Status, selectableItem: onSelect, click: onClick")
         i(data-bind="text: DayText")
+      
+        
 
 

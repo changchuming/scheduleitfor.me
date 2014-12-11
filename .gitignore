@@ -18,6 +18,7 @@ public
 node_modules
 bower_components
 web/scss/lib
+web/js
 
 # Users Environment Variables
 .lock-wscript

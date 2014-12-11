@@ -5,6 +5,10 @@
 .cal_row {
     overflow: hidden;
 
+    > .ui-selected {
+            background: green;
+    }
+
     > div {
         width: 14%;
         height: 100px;
@@ -31,7 +35,6 @@
 
         &:hover {
             cursor: pointer;
-            background: #f9f9f9;
         }
 
         &:first-child, &:nth-child(7n+8) {

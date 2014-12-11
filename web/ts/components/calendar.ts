@@ -2,55 +2,35 @@
 /// <reference path="../../definitions/jquery.d.ts" />
 /// <reference path="../../definitions/browserify.d.ts" />
 /// <reference path="../../definitions/moment.d.ts" />
+/// <reference path="../../definitions/scheduleit.d.ts" />
 
 
 import moment = require('moment');
 import ko = require('knockout');
 
-export interface ICalendarDay {    
-    MonthStatus: KnockoutComputed<string>;
-    IsSelected: boolean;
-    CalDate: Date;
-    DayText: string;
-}
-
-export interface ICalendar {
-    Days: KnockoutObservableArray<ICalendarDay>;
-};
-
 export class CalendarDay implements ICalendarDay {
-    public MonthStatus : KnockoutComputed<string>;
+    public Status: KnockoutComputed<string> = ko.computed((): string => {
+        var status = "";
+        status += this._getMonthStatus();
+        status += this._getSelectedStatus();
+        return status; 
+    }, this);
 
-    public onSelect() {
-        this.IsSelected = this.IsSelected ? true : false;
+    public onSelect = (isSelected: boolean) => {
+        this.IsSelected(isSelected);
     }
 
-    public OnTap(bindingContext : KnockoutBindingContext) {
-        console.log("hi");
+    public onClick() {
+        this.IsSelected(!this.IsSelected());
     }
 
-    constructor(public CalDate: Date,
+    constructor(calDate : Date,
         public DayText : string = "",
-        public IsSelected: boolean = false) {
+        public IsSelected: KnockoutObservable<boolean> = ko.observable(false),
+        public CalDate: KnockoutObservable<Date> = ko.observable(new Date)) {
         //Initialization
+        this.CalDate(calDate);
         this.DayText = this._getDayText();
-        this.MonthStatus = ko.pureComputed(() => {
-            return this._monthStatus();
-        });
-    }
-
-    private _monthStatus(): string {
-        var status: string = "";
-        var today = moment();
-
-        if (moment(today).isAfter(this.CalDate, "month")) {
-            status = "prev_month";
-        }
-        else if (moment(today).isBefore(this.CalDate, "month")) {
-            status = "next_month";
-        }
-
-        return status;
     }
 
     // Returns the text that will be displayed on the calendar
@@ -67,21 +47,32 @@ export class CalendarDay implements ICalendarDay {
             result += moment(this.CalDate).format("MMM") + " ";
         }
 
-        result += this.CalDate.getDate();
+        result += this.CalDate().getDate();
         return result;
+    }
+
+    private _getMonthStatus() : string {
+        var status: string = "";
+        var today = moment();
+
+        if (moment(today).isAfter(this.CalDate(), "month")) {
+            status += "prev_month";
+        }
+        else if (moment(today).isBefore(this.CalDate(), "month")) {
+            status += "next_month";
+        }
+
+        return status;
+    }
+
+    private _getSelectedStatus(): string {
+        
+        return this.IsSelected() ? "ui-selected" : "";
     }
 }
 
 export class CalendarVm implements ICalendar {
-    private _daysInWeek = 7;
-
-    private getSelectedDates(): Date[] {
-        var selectedDates: Date[] = [];
-        this._days.forEach((day) => {
-            if (day.IsSelected) { selectedDates.push(day.CalDate); }
-        });
-
-        return selectedDates;
+    public SelectableOptions: JQueryUI.SelectableEvents = {
     }
 
     constructor(private _aroundThisDate: Date = new Date(),
@@ -90,6 +81,18 @@ export class CalendarVm implements ICalendar {
         // Initialize Variables
         this._days = this.createCalendarDays(this._aroundThisDate);
         this.Days = ko.observableArray(this._days);
+    }
+
+    private _daysInWeek = 7;
+
+    // Gets the Dates that are Selected Within this Calendar
+    private getSelectedDates(): Date[] {
+        var selectedDates: Date[] = [];
+        this._days.forEach((day) => {
+            if (day.IsSelected) { selectedDates.push(day.CalDate()); }
+        });
+
+        return selectedDates;
     }
 
     // Fills out a 5 x 7 (35) element array of days showing the
