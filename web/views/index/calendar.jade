@@ -16,7 +16,7 @@ mixin calendar
       div Sun
         span day
     .cal_row(data-bind="foreach: Days")
-      div.ui-state-default(data-bind="css: Status, selectableItem: onSelect, click: onClick")
+      div.ui-state-default(data-bind="css: Status, selectableItem: onSelect, event: { mousedown: onMouseDown}")
         i(data-bind="text: DayText")
       
         

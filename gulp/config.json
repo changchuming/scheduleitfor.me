@@ -14,5 +14,5 @@
         "fonts": "./web/fonts/**/*",
         "fonts_out": "./public/fonts"
     },
-    "isVisualStudio" : true
+    "isVisualStudio" : false
 }

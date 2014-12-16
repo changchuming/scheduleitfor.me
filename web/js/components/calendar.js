@@ -1,8 +1,8 @@
-/// <reference path="../../definitions/knockout.d.ts" />
-/// <reference path="../../definitions/jquery.d.ts" />
-/// <reference path="../../definitions/browserify.d.ts" />
-/// <reference path="../../definitions/moment.d.ts" />
-/// <reference path="../../definitions/scheduleit.d.ts" />
+/// <reference path="../../../definitions/knockout.d.ts" />
+/// <reference path="../../../definitions/jquery.d.ts" />
+/// <reference path="../../../definitions/browserify.d.ts" />
+/// <reference path="../../../definitions/moment.d.ts" />
+/// <reference path="../../../definitions/scheduleit.d.ts" />
 var moment = require('moment');
 var ko = require('knockout');
 var CalendarDay = (function () {
@@ -21,13 +21,14 @@ var CalendarDay = (function () {
             return status;
         }, this);
         this.onSelect = function (isSelected) {
+            alert('select');
             _this.IsSelected(isSelected);
         };
         //Initialization
         this.CalDate(calDate);
         this.DayText = this._getDayText();
     }
-    CalendarDay.prototype.onClick = function () {
+    CalendarDay.prototype.onMouseDown = function () {
         this.IsSelected(!this.IsSelected());
     };
     // Returns the text that will be displayed on the calendar

@@ -1,8 +1,8 @@
-﻿/// <reference path="../../definitions/knockout.d.ts" />
-/// <reference path="../../definitions/jquery.d.ts" />
-/// <reference path="../../definitions/browserify.d.ts" />
-/// <reference path="../../definitions/moment.d.ts" />
-/// <reference path="../../definitions/scheduleit.d.ts" />
+/// <reference path="../../../definitions/knockout.d.ts" />
+/// <reference path="../../../definitions/jquery.d.ts" />
+/// <reference path="../../../definitions/browserify.d.ts" />
+/// <reference path="../../../definitions/moment.d.ts" />
+/// <reference path="../../../definitions/scheduleit.d.ts" />
 
 
 import moment = require('moment');
@@ -17,10 +17,11 @@ export class CalendarDay implements ICalendarDay {
     }, this);
 
     public onSelect = (isSelected: boolean) => {
-        this.IsSelected(isSelected);
+    	alert('select');
+    	this.IsSelected(isSelected);
     }
 
-    public onClick() {
+    public onMouseDown() {
         this.IsSelected(!this.IsSelected());
     }
 
