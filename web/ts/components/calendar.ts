@@ -17,12 +17,13 @@ export class CalendarDay implements ICalendarDay {
     }, this);
 
     public onMouseDown(data, event) {
-    	if (event.target.hasClass('chosenfilter')) {
-    		event.target
+    	var element = $(event.target);
+    	if (element.hasClass('chosenfilter')) {
+    		element
 	        .removeClass('chosenfilter')
 	        .removeClass('ui-selected');
 	    } else {
-	    	event.target
+	    	element
 	        .addClass('chosenfilter')
 	        .addClass('ui-selected');
 	    }

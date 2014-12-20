@@ -25,11 +25,12 @@ var CalendarDay = (function () {
         this.DayText = this._getDayText();
     }
     CalendarDay.prototype.onMouseDown = function (data, event) {
-        if (event.target.hasClass('chosenfilter')) {
-            event.target.removeClass('chosenfilter').removeClass('ui-selected');
+        var element = $(event.target);
+        if (element.hasClass('chosenfilter')) {
+            element.removeClass('chosenfilter').removeClass('ui-selected');
         }
         else {
-            event.target.addClass('chosenfilter').addClass('ui-selected');
+            element.addClass('chosenfilter').addClass('ui-selected');
         }
         //this.IsSelected(!this.IsSelected());
     };
