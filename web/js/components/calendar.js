@@ -20,16 +20,18 @@ var CalendarDay = (function () {
             status += _this._getSelectedStatus();
             return status;
         }, this);
-        this.onSelect = function (isSelected) {
-            alert('select');
-            _this.IsSelected(isSelected);
-        };
         //Initialization
         this.CalDate(calDate);
         this.DayText = this._getDayText();
     }
-    CalendarDay.prototype.onMouseDown = function () {
-        this.IsSelected(!this.IsSelected());
+    CalendarDay.prototype.onMouseDown = function (data, event) {
+        if (event.target.hasClass('chosenfilter')) {
+            event.target.removeClass('chosenfilter').removeClass('ui-selected');
+        }
+        else {
+            event.target.addClass('chosenfilter').addClass('ui-selected');
+        }
+        //this.IsSelected(!this.IsSelected());
     };
     // Returns the text that will be displayed on the calendar
     // based on the current date
@@ -56,7 +58,7 @@ var CalendarDay = (function () {
         return status;
     };
     CalendarDay.prototype._getSelectedStatus = function () {
-        return this.IsSelected() ? "ui-selected" : "";
+        return ''; //return this.hasClass('chosenfilter') ? "ui-selected chosenfilter" : "";
     };
     return CalendarDay;
 })();
@@ -69,7 +71,17 @@ var CalendarVm = (function () {
         this._aroundThisDate = _aroundThisDate;
         this._days = _days;
         this.Days = Days;
-        this.SelectableOptions = {};
+        this.SelectableOptions = {
+            selected: function (event, ui) {
+                // Custom events
+            },
+            selecting: function (event, ui) {
+                // Custom events
+            },
+            unselecting: function (event, ui) {
+                // Custom events
+            }
+        };
         this._daysInWeek = 7;
         // Initialize Variables
         this._days = this.createCalendarDays(this._aroundThisDate);

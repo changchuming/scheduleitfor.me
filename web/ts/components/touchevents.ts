@@ -13,13 +13,32 @@ export function InitializeSelection(ko: KnockoutStatic, $: JQueryStatic) {
 
             var options: JQueryUI.SelectableEvents = {
                 selected: function (e, ui) {
-                    customEvents.selected;
+        		    if ($(ui.selected).hasClass('chosenfilter')) {
+        		        $(ui.selected)
+        		        .removeClass('chosenfilter')
+        		        .removeClass('ui-selected');
+        		    } else {
+        		        $(ui.selected)
+        		        .addClass('chosenfilter')
+        		        .addClass('ui-selected');
+        		    }
+                    customEvents.selected(e, ui);
                 },
-                selecting: function (e, ui) {                    
-                    customEvents.selected;
+                selecting: function (e, ui) {
+                	if ($(ui.selecting).hasClass('chosenfilter')) {
+        				$(ui.selecting)
+        				.addClass('ui-unselecting')
+        				.removeClass('ui-selected');
+        		    }
+                    customEvents.selecting(e, ui);
                 },
                 unselecting: function (e, ui) {
-                    customEvents.selected;
+                	if ($(ui.unselecting).hasClass('chosenfilter')) {
+        				$(ui.unselecting)
+        				.removeClass('ui-unselecting')
+        				.addClass('ui-selected');
+        		    }
+                    customEvents.unselecting(e, ui);
                 }
             }
 

@@ -16,13 +16,17 @@ export class CalendarDay implements ICalendarDay {
         return status; 
     }, this);
 
-    public onSelect = (isSelected: boolean) => {
-    	alert('select');
-    	this.IsSelected(isSelected);
-    }
-
-    public onMouseDown() {
-        this.IsSelected(!this.IsSelected());
+    public onMouseDown(data, event) {
+    	if (event.target.hasClass('chosenfilter')) {
+    		event.target
+	        .removeClass('chosenfilter')
+	        .removeClass('ui-selected');
+	    } else {
+	    	event.target
+	        .addClass('chosenfilter')
+	        .addClass('ui-selected');
+	    }
+        //this.IsSelected(!this.IsSelected());
     }
 
     constructor(calDate : Date,
@@ -67,13 +71,21 @@ export class CalendarDay implements ICalendarDay {
     }
 
     private _getSelectedStatus(): string {
-        
-        return this.IsSelected() ? "ui-selected" : "";
+        return '';//return this.hasClass('chosenfilter') ? "ui-selected chosenfilter" : "";
     }
 }
 
 export class CalendarVm implements ICalendar {
     public SelectableOptions: JQueryUI.SelectableEvents = {
+    		selected: function (event, ui) {
+    			// Custom events
+    		},
+			selecting: function (event, ui) {
+				// Custom events
+			},
+    		unselecting: function (event, ui) {
+    			// Custom events
+    		}
     }
 
     constructor(private _aroundThisDate: Date = new Date(),

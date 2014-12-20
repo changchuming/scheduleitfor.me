@@ -8,6 +8,14 @@
     > .ui-selected {
             background: green;
     }
+    
+    > .ui-selecting {
+            background: lightgreen;
+    }
+    
+    > .ui-unselecting {
+            background: grey;
+    }
 
     > div {
         width: 14%;
