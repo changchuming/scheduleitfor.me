@@ -24,15 +24,8 @@ var CalendarDay = (function () {
         this.CalDate(calDate);
         this.DayText = this._getDayText();
     }
-    CalendarDay.prototype.onMouseDown = function (data, event) {
-        var element = $(event.target);
-        if (element.hasClass('chosenfilter')) {
-            element.removeClass('chosenfilter').removeClass('ui-selected');
-        }
-        else {
-            element.addClass('chosenfilter').addClass('ui-selected');
-        }
-        //this.IsSelected(!this.IsSelected());
+    CalendarDay.prototype.toggleSelectionStatus = function () {
+        this.IsSelected(!this.IsSelected());
     };
     // Returns the text that will be displayed on the calendar
     // based on the current date
@@ -59,7 +52,7 @@ var CalendarDay = (function () {
         return status;
     };
     CalendarDay.prototype._getSelectedStatus = function () {
-        return ''; //return this.hasClass('chosenfilter') ? "ui-selected chosenfilter" : "";
+        return this.IsSelected() ? "selectedfilter" : "";
     };
     return CalendarDay;
 })();

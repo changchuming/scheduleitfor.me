@@ -15,19 +15,9 @@ export class CalendarDay implements ICalendarDay {
         status += this._getSelectedStatus();
         return status; 
     }, this);
-
-    public onMouseDown(data, event) {
-    	var element = $(event.target);
-    	if (element.hasClass('chosenfilter')) {
-    		element
-	        .removeClass('chosenfilter')
-	        .removeClass('ui-selected');
-	    } else {
-	    	element
-	        .addClass('chosenfilter')
-	        .addClass('ui-selected');
-	    }
-        //this.IsSelected(!this.IsSelected());
+    
+    public toggleSelectionStatus() {
+        this.IsSelected(!this.IsSelected());
     }
 
     constructor(calDate : Date,
@@ -72,7 +62,7 @@ export class CalendarDay implements ICalendarDay {
     }
 
     private _getSelectedStatus(): string {
-        return '';//return this.hasClass('chosenfilter') ? "ui-selected chosenfilter" : "";
+        return this.IsSelected() ? "selectedfilter" : "";
     }
 }
 

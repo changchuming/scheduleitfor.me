@@ -13,32 +13,24 @@ export function InitializeSelection(ko: KnockoutStatic, $: JQueryStatic) {
 
             var options: JQueryUI.SelectableEvents = {
                 selected: function (e, ui) {
-        		    if ($(ui.selected).hasClass('chosenfilter')) {
-        		        $(ui.selected)
-        		        .removeClass('chosenfilter')
-        		        .removeClass('ui-selected');
-        		    } else {
-        		        $(ui.selected)
-        		        .addClass('chosenfilter')
-        		        .addClass('ui-selected');
-        		    }
+                	var viewmodel = ko.dataFor(ui.selected);
+        		    $(ui.selected).removeClass('ui-selected');
+                	viewmodel.toggleSelectionStatus();
                     customEvents.selected(e, ui);
                 },
                 selecting: function (e, ui) {
-                	if ($(ui.selecting).hasClass('chosenfilter')) {
-        				$(ui.selecting)
-        				.addClass('ui-unselecting')
-        				.removeClass('ui-selected');
+                	var viewmodel = ko.dataFor(ui.selecting);
+        		    if (viewmodel.IsSelected()) {
+        				$(ui.selecting).addClass('ui-unselecting');
         		    }
-                    customEvents.selecting(e, ui);
+                    customEvents.selected(e, ui);
                 },
                 unselecting: function (e, ui) {
-                	if ($(ui.unselecting).hasClass('chosenfilter')) {
-        				$(ui.unselecting)
-        				.removeClass('ui-unselecting')
-        				.addClass('ui-selected');
+                	var viewmodel = ko.dataFor(ui.unselecting);
+        		    if (viewmodel.IsSelected()) {
+        				$(ui.unselecting).removeClass('ui-unselecting');
         		    }
-                    customEvents.unselecting(e, ui);
+                    customEvents.selected(e, ui);
                 }
             }
 
@@ -48,47 +40,4 @@ export function InitializeSelection(ko: KnockoutStatic, $: JQueryStatic) {
         	.selectable(options);
         }
     };
-
-//    // Initializes Selection Handlers on Each Selectable Item
-//    ko.bindingHandlers.selectableItem = {
-//        init: function (element, valueAccessor, allBindingsAccessor) {
-//            var selectable = $(element).parent();
-//
-//            selectable.bind('selectableselected', function (event, ui) {
-//                if (ui.selected === element) {
-//                    var value = valueAccessor();
-//                    value(true);
-//                }
-//            });
-//
-//            selectable.bind('selectableunselected', function (event, ui) {
-//                if (ui.unselected === element) {
-//                    var value = valueAccessor();
-//                    value(false);
-//                }
-//            });
-//        }
-//    };
 }
-
-//var selectableDefaults = {
-//    selected: function (event, ui) {
-//        if ($(ui.selected).hasClass('chosenfilter')) {
-//            $(ui.selected).removeClass('chosenfilter').removeClass('ui-selected');
-//        } else {
-//            $(ui.selected).addClass('chosenfilter').addClass('ui-selected');
-//        }
-//    },
-//    selecting: function (event, ui) {
-//        if ($(ui.selecting).hasClass('chosenfilter')) {
-//            $(ui.selecting).addClass('ui-unselecting');
-//            $(ui.selecting).removeClass('ui-selected');
-//        }
-//    },
-//    unselecting: function (event, ui) {
-//        if ($(ui.unselecting).hasClass('chosenfilter')) {
-//            $(ui.unselecting).removeClass('ui-unselecting');
-//            $(ui.unselecting).addClass('ui-selected');
-//        }
-//    }
-//};
