@@ -9,64 +9,48 @@ import moment = require('moment');
 import ko = require('knockout');
 
 export class CalendarDay implements ICalendarDay {
+    constructor(private calDate : Moment,
+        	private monthStatus : string,
+            public DateText : string = "",
+            public IsSelected: KnockoutObservable<boolean> = ko.observable(false)) {
+            //Initialization
+            this.DateText = this._getDateText();
+        }
+
     public Status: KnockoutComputed<string> = ko.computed((): string => {
         var status = "";
-        status += this._getMonthStatus();
+        status += this.monthStatus;
         status += this._getSelectedStatus();
         return status; 
     }, this);
-    
-    public toggleSelectionStatus() {
-        this.IsSelected(!this.IsSelected());
-    }
-
-    constructor(calDate : Date,
-        public DayText : string = "",
-        public IsSelected: KnockoutObservable<boolean> = ko.observable(false),
-        public CalDate: KnockoutObservable<Date> = ko.observable(new Date)) {
-        //Initialization
-        this.CalDate(calDate);
-        this.DayText = this._getDayText();
-    }
 
     // Returns the text that will be displayed on the calendar
     // based on the current date
-    private _getDayText(): string {
-        var startOfNextMonth = moment(new Date())
-            .add(1, "month")
-            .startOf("month");        
-        var result = "";
-
-        // If the date is either at the start of the month,
-        // add the month's name before it
-        if (moment(this.CalDate).isSame(startOfNextMonth)) {
-            result += moment(this.CalDate).format("MMM") + " ";
-        }
-
-        result += this.CalDate().getDate();
-        return result;
-    }
-
-    private _getMonthStatus() : string {
-        var status: string = "";
-        var today = moment();
-
-        if (moment(today).isAfter(this.CalDate(), "month")) {
-            status += "prev_month";
-        }
-        else if (moment(today).isBefore(this.CalDate(), "month")) {
-            status += "next_month";
-        }
-
-        return status;
+    private _getDateText(): string {
+        return this.calDate.date().toString();
     }
 
     private _getSelectedStatus(): string {
         return this.IsSelected() ? "selectedfilter" : "";
     }
+    
+    public toggleSelectionStatus() {
+    	if (this.monthStatus == "") {
+    		this.IsSelected(!this.IsSelected());
+    	}
+    }
 }
 
 export class CalendarVm implements ICalendar {
+    constructor(private _StartOfCalendar: Moment,
+        private _months: ICalendarDay[][]= [],
+        private _currentMonth : number = 0,
+        public Days: KnockoutObservableArray<ICalendarDay> = ko.observableArray([])) {
+        // Initialize Variables
+        this._months.push(this.createCalendarDays(this._StartOfCalendar));
+        this.Days = ko.observableArray(this._months[this._currentMonth]);
+    }
+    
     public SelectableOptions: JQueryUI.SelectableEvents = {
     		selected: function (event, ui) {
     			// Custom events
@@ -79,50 +63,68 @@ export class CalendarVm implements ICalendar {
     		}
     }
 
-    constructor(private _aroundThisDate: Date = new Date(),
-        private _days: ICalendarDay[]= [],
-        public Days: KnockoutObservableArray<ICalendarDay> = ko.observableArray([])) {
-        // Initialize Variables
-        this._days = this.createCalendarDays(this._aroundThisDate);
-        this.Days = ko.observableArray(this._days);
-    }
-
     private _daysInWeek = 7;
-
-    // Gets the Dates that are Selected Within this Calendar
-    private getSelectedDates(): Date[] {
-        var selectedDates: Date[] = [];
-        this._days.forEach((day) => {
-            if (day.IsSelected) { selectedDates.push(day.CalDate()); }
-        });
-
-        return selectedDates;
+    
+    // Switches calendar to next month; Create if not exists
+    public nextMonth() {
+    	this._currentMonth++;
+    	if (this._currentMonth >= this._months.length) {
+    		console.log('pushed');
+    		var StartOfNextMonth = moment(this._StartOfCalendar).add(this._currentMonth, 'months');
+    		this._months.push(this.createCalendarDays(StartOfNextMonth));
+    	}
+    	this.Days(this._months[this._currentMonth]);
+    	console.log(this.Days());
     }
+    
+    // Switches calendar to previous month;
+    public prevMonth() {
+    	if (this._currentMonth > 0) {
+    		this._currentMonth--;
+    	}
+    	this.Days(this._months[this._currentMonth]);
+    	console.log(this.Days());
+    }
+
+//    // Gets the Dates that are Selected Within this Calendar
+//    private getSelectedDates(): Date[] {
+//        var selectedDates: Date[] = [];
+//        this._months[0].forEach((day) => { //edit
+//            if (day.IsSelected) { selectedDates.push(day.calDate); }
+//        });
+//
+//        return selectedDates;
+//    }
 
     // Fills out a 5 x 7 (35) element array of days showing the
     // days in the month and a few from the prev month and next month
-    private createCalendarDays(AroundThisDate: Date): ICalendarDay[] {
-        var startDay = moment(AroundThisDate).startOf('month'),
-            endDay = moment(AroundThisDate).endOf('month'),
-            currMonth = moment(AroundThisDate).month(),
+    private createCalendarDays(StartOfMonth: Moment): ICalendarDay[] {
+        var startDay = moment(StartOfMonth).startOf('month'),
+            endDay = moment(StartOfMonth).endOf('month'),
+            currMonth = moment(StartOfMonth).month(),
             days: ICalendarDay[] = [];
 
         //Check if the start of the month coincides with a Monday.
         // If not, add days starting from the prev month.
-        if (startDay.day() != 1) {
-            startDay.add(-startDay.day() + 1)
+        if (startDay.day() == 0) {
+        	startDay.subtract(6, 'days');
+        }
+        else {
+            startDay.subtract(startDay.day() - 1, 'days');
         }
 
-        // Do the same to check if the end of the month conincides with
+        // Do the same to check if the end of the month coincides with
         // the number of days in the week for the calendar. If not add next
         // month's days
-        if (endDay.day() != this._daysInWeek) {
-            endDay.add(this._daysInWeek - endDay.day(),'day');
+        if (endDay.day() != 0) {
+            endDay.add(this._daysInWeek - endDay.day(), 'days');
         }
 
         // Create CalendarDay objects for each date
-        while (!moment(startDay).isAfter(endDay, "day")) {         
-            var calDay = new CalendarDay(moment(startDay).toDate());
+        while (!moment(startDay).isAfter(endDay, "day")) {
+        	console.log(startDay);
+        	var monthStatus = (startDay.month()==StartOfMonth.month()) ? "" : "other_month";
+            var calDay = new CalendarDay(moment(startDay), monthStatus);
             days.push(calDay);
             startDay.add(1, 'day');
         }

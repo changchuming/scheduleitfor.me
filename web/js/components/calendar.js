@@ -6,64 +6,47 @@
 var moment = require('moment');
 var ko = require('knockout');
 var CalendarDay = (function () {
-    function CalendarDay(calDate, DayText, IsSelected, CalDate) {
+    function CalendarDay(calDate, monthStatus, DateText, IsSelected) {
         var _this = this;
-        if (DayText === void 0) { DayText = ""; }
+        if (DateText === void 0) { DateText = ""; }
         if (IsSelected === void 0) { IsSelected = ko.observable(false); }
-        if (CalDate === void 0) { CalDate = ko.observable(new Date); }
-        this.DayText = DayText;
+        this.calDate = calDate;
+        this.monthStatus = monthStatus;
+        this.DateText = DateText;
         this.IsSelected = IsSelected;
-        this.CalDate = CalDate;
         this.Status = ko.computed(function () {
             var status = "";
-            status += _this._getMonthStatus();
+            status += _this.monthStatus;
             status += _this._getSelectedStatus();
             return status;
         }, this);
         //Initialization
-        this.CalDate(calDate);
-        this.DayText = this._getDayText();
+        this.DateText = this._getDateText();
     }
-    CalendarDay.prototype.toggleSelectionStatus = function () {
-        this.IsSelected(!this.IsSelected());
-    };
     // Returns the text that will be displayed on the calendar
     // based on the current date
-    CalendarDay.prototype._getDayText = function () {
-        var startOfNextMonth = moment(new Date()).add(1, "month").startOf("month");
-        var result = "";
-        // If the date is either at the start of the month,
-        // add the month's name before it
-        if (moment(this.CalDate).isSame(startOfNextMonth)) {
-            result += moment(this.CalDate).format("MMM") + " ";
-        }
-        result += this.CalDate().getDate();
-        return result;
-    };
-    CalendarDay.prototype._getMonthStatus = function () {
-        var status = "";
-        var today = moment();
-        if (moment(today).isAfter(this.CalDate(), "month")) {
-            status += "prev_month";
-        }
-        else if (moment(today).isBefore(this.CalDate(), "month")) {
-            status += "next_month";
-        }
-        return status;
+    CalendarDay.prototype._getDateText = function () {
+        return this.calDate.date().toString();
     };
     CalendarDay.prototype._getSelectedStatus = function () {
         return this.IsSelected() ? "selectedfilter" : "";
+    };
+    CalendarDay.prototype.toggleSelectionStatus = function () {
+        if (this.monthStatus == "") {
+            this.IsSelected(!this.IsSelected());
+        }
     };
     return CalendarDay;
 })();
 exports.CalendarDay = CalendarDay;
 var CalendarVm = (function () {
-    function CalendarVm(_aroundThisDate, _days, Days) {
-        if (_aroundThisDate === void 0) { _aroundThisDate = new Date(); }
-        if (_days === void 0) { _days = []; }
+    function CalendarVm(_StartOfCalendar, _months, _currentMonth, Days) {
+        if (_months === void 0) { _months = []; }
+        if (_currentMonth === void 0) { _currentMonth = 0; }
         if (Days === void 0) { Days = ko.observableArray([]); }
-        this._aroundThisDate = _aroundThisDate;
-        this._days = _days;
+        this._StartOfCalendar = _StartOfCalendar;
+        this._months = _months;
+        this._currentMonth = _currentMonth;
         this.Days = Days;
         this.SelectableOptions = {
             selected: function (event, ui) {
@@ -78,36 +61,59 @@ var CalendarVm = (function () {
         };
         this._daysInWeek = 7;
         // Initialize Variables
-        this._days = this.createCalendarDays(this._aroundThisDate);
-        this.Days = ko.observableArray(this._days);
+        this._months.push(this.createCalendarDays(this._StartOfCalendar));
+        this.Days = ko.observableArray(this._months[this._currentMonth]);
     }
-    // Gets the Dates that are Selected Within this Calendar
-    CalendarVm.prototype.getSelectedDates = function () {
-        var selectedDates = [];
-        this._days.forEach(function (day) {
-            if (day.IsSelected) {
-                selectedDates.push(day.CalDate());
-            }
-        });
-        return selectedDates;
+    // Switches calendar to next month; Create if not exists
+    CalendarVm.prototype.nextMonth = function () {
+        this._currentMonth++;
+        if (this._currentMonth >= this._months.length) {
+            console.log('pushed');
+            var StartOfNextMonth = moment(this._StartOfCalendar).add(this._currentMonth, 'months');
+            this._months.push(this.createCalendarDays(StartOfNextMonth));
+        }
+        this.Days(this._months[this._currentMonth]);
+        console.log(this.Days());
     };
+    // Switches calendar to previous month;
+    CalendarVm.prototype.prevMonth = function () {
+        if (this._currentMonth > 0) {
+            this._currentMonth--;
+        }
+        this.Days(this._months[this._currentMonth]);
+        console.log(this.Days());
+    };
+    //    // Gets the Dates that are Selected Within this Calendar
+    //    private getSelectedDates(): Date[] {
+    //        var selectedDates: Date[] = [];
+    //        this._months[0].forEach((day) => { //edit
+    //            if (day.IsSelected) { selectedDates.push(day.calDate); }
+    //        });
+    //
+    //        return selectedDates;
+    //    }
     // Fills out a 5 x 7 (35) element array of days showing the
     // days in the month and a few from the prev month and next month
-    CalendarVm.prototype.createCalendarDays = function (AroundThisDate) {
-        var startDay = moment(AroundThisDate).startOf('month'), endDay = moment(AroundThisDate).endOf('month'), currMonth = moment(AroundThisDate).month(), days = [];
+    CalendarVm.prototype.createCalendarDays = function (StartOfMonth) {
+        var startDay = moment(StartOfMonth).startOf('month'), endDay = moment(StartOfMonth).endOf('month'), currMonth = moment(StartOfMonth).month(), days = [];
         //Check if the start of the month coincides with a Monday.
         // If not, add days starting from the prev month.
-        if (startDay.day() != 1) {
-            startDay.add(-startDay.day() + 1);
+        if (startDay.day() == 0) {
+            startDay.subtract(6, 'days');
         }
-        // Do the same to check if the end of the month conincides with
+        else {
+            startDay.subtract(startDay.day() - 1, 'days');
+        }
+        // Do the same to check if the end of the month coincides with
         // the number of days in the week for the calendar. If not add next
         // month's days
-        if (endDay.day() != this._daysInWeek) {
-            endDay.add(this._daysInWeek - endDay.day(), 'day');
+        if (endDay.day() != 0) {
+            endDay.add(this._daysInWeek - endDay.day(), 'days');
         }
         while (!moment(startDay).isAfter(endDay, "day")) {
-            var calDay = new CalendarDay(moment(startDay).toDate());
+            console.log(startDay);
+            var monthStatus = (startDay.month() == StartOfMonth.month()) ? "" : "other_month";
+            var calDay = new CalendarDay(moment(startDay), monthStatus);
             days.push(calDay);
             startDay.add(1, 'day');
         }

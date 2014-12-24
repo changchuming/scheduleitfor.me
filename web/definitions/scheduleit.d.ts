@@ -8,8 +8,7 @@ interface KnockoutBindingHandlers {
 interface ICalendarDay {
     Status: KnockoutComputed<string>;
     IsSelected: KnockoutObservable<boolean>;
-    CalDate: KnockoutObservable<Date>;
-    DayText: string;
+    DateText: string;
 }
 
 interface ICalendar {

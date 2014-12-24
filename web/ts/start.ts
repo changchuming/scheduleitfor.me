@@ -28,8 +28,9 @@ var touchEvents = require('./web/js/components/touchevents');
 
 //Initialization
 $(function () {
-    var calVm = new cal.CalendarVm(moment().toDate());
-    
+	var startDay = moment().startOf('month');
+    var calVm = new cal.CalendarVm(startDay);
+	
     init_slider();
     init_calendar(calVm);
 });

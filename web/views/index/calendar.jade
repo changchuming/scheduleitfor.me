@@ -16,4 +16,8 @@ mixin calendar
       div Sun
         span day
     .cal_row(data-bind="foreach: Days, selectable: SelectableOptions")
-      div.ui-state-default(data-bind="text: DayText, css: Status")
+      div.ui-state-default(data-bind="text: DateText, css: Status")
+    button(id="prev" data-bind="click: prevMonth").
+      Prev
+    button(id="next" data-bind="click: nextMonth").
+      Next
