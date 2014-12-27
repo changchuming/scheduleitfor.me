@@ -13,7 +13,6 @@ gulp.task('clean:csslib', function (cb){
 })
 
 gulp.task('copy:csslib', ['clean:csslib'], function (cb){
-    console.log("Hi");
     return gulp.src('./bower_components/**/*.css')
         .pipe(plugins.rename({
             extname: ".scss"

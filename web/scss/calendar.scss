@@ -1,118 +1,21 @@
-/*
- * CSS Calendar
- * Originally by
- * Tim Wright
- * Chris Coyier
- -----------------------------*/
+@import './components/cal';
+@import './lib/seiyria-bootstrap-slider/css/bootstrap-slider';
 
-/* Date list */
-.ui-state-default{
-	background-image: none;
-}
-
-
-#datelist .ui-selecting {
-	background: #FECA40;
-}
-#datelist .ui-selected {
-	background: #F39814;
-	color: white;
-}
-#datelist .ui-unselecting {
-	background: #c0c0c0;
-}
-#datelist
-{
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	width: 800px;
-	height: 500px;
-}
-#datelist li
-{
-	margin: 3px;
-	padding: 1px;
-	float: left;
-	width: 100px;
-	height: 80px;
-	font-size: 4em;
-	text-align: center;
+.form-group{
+    label {
+        text-align: center;
+        float:none;
+        display: inline-block;
+    }
 }
 
-/* Time list */
-#timelist .ui-selecting {
-	background: #FECA40;
-}
-#timelist .ui-selected {
-	background: #F39814;
-	color: white;
-}
-#timelist .ui-unselecting {
-	background: #c0c0c0;
-}
-#timelist
-{
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	width: 800px;
-	height: 500px;
-}
-#timelist li
-{
-	margin: 3px;
-	padding: 1px;
-	float: left;
-	width: 90px;
-	height: 20px;
-	font-size: 1em;
-	text-align: center;
+.content{
+    margin: 15px;
 }
 
-#calendar
-{
-	clear: both;
+.capitalized-header {
+    font-family: 'JunctionBold';
+    color: #1E1D1D;
+    text-align: center;
+    font-size: 90%;
 }
-
-td
-{
-	text-align:center;
-	width:6em;
-	height:4em;
-	float:left;
-	margin:.2em;
-	padding:.2em;
-	overflow:auto;
-	background: url(../images/day-bg-beige.png) bottom right no-repeat;
-}
-
-td.date.header
-{
-	height:2em;
-}
-
-td.time
-{
-	height:2em;
-	margin:0.05em;
-	padding:0.05em;
-}
-
-td.length, td.mode
-{
-	height:3em;
-	margin:0.05em;
-	padding:0.05em;
-}
-
-td.time.header
-{
-	height:3em;
-}
-
-td.disabled
-{
-	background: url(images/day-bg-inactive.png) bottom right no-repeat;
-}
-

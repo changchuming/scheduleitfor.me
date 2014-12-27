@@ -17,7 +17,6 @@ mixin calendar
         span day
     .cal_row(data-bind="foreach: Days, selectable: SelectableOptions")
       div.ui-state-default(data-bind="text: DateText, css: Status")
-    button(id="prev" data-bind="click: prevMonth").
-      Prev
-    button(id="next" data-bind="click: nextMonth").
-      Next
+    .btn-group(role="group" aria-label="shift-calendar")
+      button.btn.btn-default(type="button" data-bind="click: prevMonth") Prev
+      button.btn.btn-default(type="button" data-bind="click: nextMonth") Next

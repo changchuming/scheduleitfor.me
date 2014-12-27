@@ -15,7 +15,7 @@ export function InitializeSelection(ko: KnockoutStatic, $: JQueryStatic) {
                 selected: function (e, ui) {
                 	var viewmodel = ko.dataFor(ui.selected);
         		    $(ui.selected).removeClass('ui-selected');
-                	viewmodel.toggleSelectionStatus();
+                	viewmodel.toggleSelectedStatus();
                     customEvents.selected(e, ui);
                 },
                 selecting: function (e, ui) {

@@ -6,45 +6,55 @@
 var moment = require('moment');
 var ko = require('knockout');
 var CalendarDay = (function () {
-    function CalendarDay(calDate, monthStatus, DateText, IsSelected) {
+    function CalendarDay(CalMoment, IsEnabled, DateText, IsSelected) {
         var _this = this;
+        if (IsEnabled === void 0) { IsEnabled = ko.observable(true); }
         if (DateText === void 0) { DateText = ""; }
         if (IsSelected === void 0) { IsSelected = ko.observable(false); }
-        this.calDate = calDate;
-        this.monthStatus = monthStatus;
+        this.CalMoment = CalMoment;
+        this.IsEnabled = IsEnabled;
         this.DateText = DateText;
         this.IsSelected = IsSelected;
         this.Status = ko.computed(function () {
             var status = "";
-            status += _this.monthStatus;
+            status += _this.IsEnabled();
+            status += " ";
             status += _this._getSelectedStatus();
             return status;
         }, this);
         //Initialization
         this.DateText = this._getDateText();
     }
+    CalendarDay.prototype.getDate = function () {
+        return this.CalMoment;
+    };
     // Returns the text that will be displayed on the calendar
     // based on the current date
     CalendarDay.prototype._getDateText = function () {
-        return this.calDate.date().toString();
+        return this.CalMoment.date().toString();
     };
     CalendarDay.prototype._getSelectedStatus = function () {
         return this.IsSelected() ? "selectedfilter" : "";
     };
-    CalendarDay.prototype.toggleSelectionStatus = function () {
-        if (this.monthStatus == "") {
+    CalendarDay.prototype.toggleSelectedStatus = function () {
+        if (this.IsEnabled()) {
             this.IsSelected(!this.IsSelected());
         }
+    };
+    CalendarDay.prototype.setEnabledStatus = function (status) {
+        this.IsSelected(false);
+        this.IsEnabled(status);
     };
     return CalendarDay;
 })();
 exports.CalendarDay = CalendarDay;
 var CalendarVm = (function () {
-    function CalendarVm(_StartOfCalendar, _months, _currentMonth, Days) {
+    function CalendarVm(_startOfCalendar, availableArray, _months, _currentMonth, Days) {
         if (_months === void 0) { _months = []; }
         if (_currentMonth === void 0) { _currentMonth = 0; }
         if (Days === void 0) { Days = ko.observableArray([]); }
-        this._StartOfCalendar = _StartOfCalendar;
+        this._startOfCalendar = _startOfCalendar;
+        this.availableArray = availableArray;
         this._months = _months;
         this._currentMonth = _currentMonth;
         this.Days = Days;
@@ -61,19 +71,17 @@ var CalendarVm = (function () {
         };
         this._daysInWeek = 7;
         // Initialize Variables
-        this._months.push(this.createCalendarDays(this._StartOfCalendar));
+        this._months.push(this.createCalendarDays(this._startOfCalendar));
         this.Days = ko.observableArray(this._months[this._currentMonth]);
     }
     // Switches calendar to next month; Create if not exists
     CalendarVm.prototype.nextMonth = function () {
         this._currentMonth++;
         if (this._currentMonth >= this._months.length) {
-            console.log('pushed');
-            var StartOfNextMonth = moment(this._StartOfCalendar).add(this._currentMonth, 'months');
-            this._months.push(this.createCalendarDays(StartOfNextMonth));
+            var startOfNextMonth = moment(this._startOfCalendar).add(this._currentMonth, 'months');
+            this._months.push(this.createCalendarDays(startOfNextMonth));
         }
         this.Days(this._months[this._currentMonth]);
-        console.log(this.Days());
     };
     // Switches calendar to previous month;
     CalendarVm.prototype.prevMonth = function () {
@@ -81,17 +89,37 @@ var CalendarVm = (function () {
             this._currentMonth--;
         }
         this.Days(this._months[this._currentMonth]);
-        console.log(this.Days());
     };
-    //    // Gets the Dates that are Selected Within this Calendar
-    //    private getSelectedDates(): Date[] {
-    //        var selectedDates: Date[] = [];
-    //        this._months[0].forEach((day) => { //edit
-    //            if (day.IsSelected) { selectedDates.push(day.calDate); }
-    //        });
-    //
-    //        return selectedDates;
-    //    }
+    // Exports selected dates as start day and a number array
+    CalendarVm.prototype.exportSelectedDates = function () {
+        var days = [].concat.apply([], this._months); // Flatten array
+        // Find the first selected day
+        var daysAsInt = [];
+        var startDay;
+        if (this.availableArray != undefined) {
+            startDay = this._startOfCalendar;
+        }
+        else {
+            for (var count = 0; count < days.length; count++) {
+                if (days[count].IsSelected()) {
+                    startDay = days[count];
+                    break;
+                }
+            }
+        }
+        // Convert selected CalendarDay array to integer array
+        days.forEach(function (day) {
+            if (day.IsSelected()) {
+                daysAsInt.push(day.CalMoment.diff(startDay.CalMoment, 'days'));
+            }
+        });
+        if (startDay == undefined) {
+            return null;
+        }
+        else {
+            return { startMoment: startDay.CalMoment, daysAsInt: daysAsInt };
+        }
+    };
     // Fills out a 5 x 7 (35) element array of days showing the
     // days in the month and a few from the prev month and next month
     CalendarVm.prototype.createCalendarDays = function (StartOfMonth) {
@@ -111,9 +139,16 @@ var CalendarVm = (function () {
             endDay.add(this._daysInWeek - endDay.day(), 'days');
         }
         while (!moment(startDay).isAfter(endDay, "day")) {
-            console.log(startDay);
-            var monthStatus = (startDay.month() == StartOfMonth.month()) ? "" : "other_month";
-            var calDay = new CalendarDay(moment(startDay), monthStatus);
+            var calDay = new CalendarDay(moment(startDay));
+            if (startDay.month() != StartOfMonth.month() || (startDay.isBefore(this._startOfCalendar))) {
+                calDay.setEnabledStatus(false);
+            }
+            else if (this.availableArray != undefined) {
+                var dayAsInt = startDay.diff(this._startOfCalendar, 'days');
+                if (this.availableArray.indexOf(dayAsInt) == -1) {
+                    calDay.setEnabledStatus(false);
+                }
+            }
             days.push(calDay);
             startDay.add(1, 'day');
         }

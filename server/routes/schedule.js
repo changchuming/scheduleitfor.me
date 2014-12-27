@@ -27,23 +27,40 @@ exports.display = function(req, res){
 // Submit results of a schedule
 //##############################################################################################
 exports.submit = function(req, res) {
-	var daterange = JSON.parse(req.body.daterange);
-	// Increment each available date of recordset
-	for (i=0;i<daterange.length;i++) {
-		redisClient.zincrby('schedule:'+req.body.schedule+':resultset', 1, daterange[i]); 
-	}
-	// Increment usercount
-	redisClient.incr('schedule:'+req.body.schedule+':usercount', function(err,reply) {
-		res.send(); // Reply to callback success
+    // Get user ip
+    var ip = req.headers['x-forwarded-for'] 
+        || req.connection.remoteAddress 
+        || req.socket.remoteAddress 
+        || req.connection.socket.remoteAddress;
+    if (ip.indexOf(',') != -1) {
+        ip = ip.substring(0, ip.indexOf(','));
+    }
+    // Check if ip already exists
+    redisClient.lrange('schedule:'+req.body.schedule+':iplist', 0, -1, function(err, reply) {
+        if (reply.indexOf(ip) != -1 && req.body.duplicate == 0) {
+            res.send('You have already indicated your response');
+        } else {
+            var selectedrange = JSON.parse(req.body.selectedrange);
+            // Increment each available date of recordset
+            for (i=0;i<selectedrange.length;i++) {
+                redisClient.zincrby('schedule:'+req.body.schedule+':resultset', 1, selectedrange[i]); 
+            }
+            // Increment usercount
+            redisClient.incr('schedule:'+req.body.schedule+':usercount', function(err,reply) {
+                res.send(); // Reply to callback success
+            });
+            // Adds user to userlist and userlist:day if not anonymous
+            if (req.body.anonymous == '0') {
+                redisClient.rpush('schedule:'+req.body.schedule+':userlist', req.body.username, function(err, reply) {
+                    for (i=0;i<selectedrange.length;i++) {
+                        redisClient.rpush('schedule:'+req.body.schedule+':userlist:'+i, reply-1); 
+                    }
+                });
+            }
+            // Adds user ip to iplist
+            redisClient.rpush('schedule:'+req.body.schedule+':iplist', ip);
+        }
 	});
-	// Adds user to userlist and userlist:day if not anonymous
-	if (req.body.anonymous == '0') {
-		redisClient.rpush('schedule:'+req.body.schedule+':userlist', req.body.name, function(err, reply) {
-			for (i=0;i<daterange.length;i++) {
-				redisClient.rpush('schedule:'+req.body.schedule+':userlist:'+i, reply-1); 
-			}
-		});
-	}
 }
 
 //##############################################################################################

@@ -1,9 +1,13 @@
 .calendar {
     overflow: hidden;
-    margin: 10px 0px 0px 0px;
+    margin: 10px 10px 0px 0px;
 }
 .cal_row {
     overflow: hidden;
+
+	> .ui-selectable-helper {
+			display:none;
+	}
 
     > .selectedfilter {
             background: green;
@@ -17,7 +21,7 @@
             background: grey;
     }
     
-    > .other_month {
+    > .false {
             background: lightgrey;
     }
 

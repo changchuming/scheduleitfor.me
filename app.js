@@ -39,7 +39,7 @@ if ('development' == app.get('env')) {
 //----------------------------------------------------------------------------------------------
 
 redisClient.on("error", function (err) {
-	res.send("Redis server cannot be reached.");
+	console.log("Redis server cannot be reached.");
 	});
 
 //----------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ app.post('/create', routes.create);
 app.get('/:schedule', schedule.display);
 
 //##############################################################################################
-// Display a schedule
+// Submit response to a schedule
 //##############################################################################################
 app.post('/submit', schedule.submit);
 
