@@ -1,10 +1,7 @@
 /// <reference path="../../../definitions/jquery.d.ts" />
 /// <reference path="../../../definitions/jqueryui.d.ts" />
-/// <reference path="../../../definitions/touchpunch.d.ts" />
-/// <reference path="../../../definitions/knockout.d.ts" />
-/// <reference path="../../../definitions/scheduleit.d.ts" />
 
-export function createSchedule(data, showSuccess, showError) {
+export function createSchedule(data, showSuccess, showMessage) {
 	$.ajax({
 		type: 'POST',
 		url: '/create',
@@ -13,12 +10,12 @@ export function createSchedule(data, showSuccess, showError) {
 			showSuccess(reply.reply);
 		 },
 		error: function(jqXHR, textStatus, errorThrown) {
-			showError(jqXHR.responseText.split('\n')[0]);
+			showMessage('Error', jqXHR.responseText.split('\n')[0]);
 		}
 	});
 }
 
-export function submitResults(data, showError) {
+export function submitResults(data, showMessage) {
 	$.ajax({
 		type: 'POST',
 		url: '/submit',
@@ -27,11 +24,27 @@ export function submitResults(data, showError) {
 			if (reply == "") {
 				window.location.href = $(location).attr('href')+'/r';
 			} else {
-				showError(reply);
+				showMessage('Error', reply);
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			showError(jqXHR.responseText.split('\n')[0]);
+			showMessage('Error', jqXHR.responseText.split('\n')[0]);
+		}
+	});
+}
+
+export function getAvailability(data, showAvailability, showMessage) {
+	$.ajax({
+		type: 'POST',
+		url: '/availability',
+		data: data,
+		success: function(reply) {
+			if (reply.userlist != '[]') {
+				showAvailability(reply);
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			showMessage('Error', jqXHR.responseText.split('\n')[0]);
 		}
 	});
 }

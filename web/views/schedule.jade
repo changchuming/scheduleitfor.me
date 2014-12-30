@@ -1,7 +1,7 @@
 include ./common/navbar.jade
 include ./common/calendar.jade
 include ./common/popup.jade
-include ./schedule/scheduledetails.jade
+include ./common/details.jade
 include ./schedule/username.jade
 
 extends layout
@@ -19,8 +19,10 @@ block content
         .row
             +calendar
         .row
-            button#submit.btn.btn-default(type="button") Submit
-            button#results.btn.btn-default(type="button") Results
+            br
+        .row
+            button#results.btn.btn-default(type="button" style="float: right;") Results
+            button#submit.btn.btn-default(type="button" style="float: right;") Submit
     +popup
 block footer
       script.

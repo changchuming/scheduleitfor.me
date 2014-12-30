@@ -1,10 +1,10 @@
 mixin eventduration
   div#EventDurationSlider
-  input.form-control(id='length' type='text')
-  .btn-group(data-toggle='buttons' aria-label='duration-type')
+  #length.form-control.panel.panel-default
+  .btn-group(data-toggle='buttons' aria-label='duration-type' style="float: right;")
      label#days.btn.btn-default.active
        input(type='radio')
        | Days
-     label#hours.btn.btn-default
-       input(type='radio')
-       | Hours
+     //label#hours.btn.btn-default
+       //input(type='radio')
+       //| Hours

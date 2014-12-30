@@ -17,16 +17,17 @@ block content
         .row
             +eventdetails
         .row
+            h4.capitalized-header How long will it be?
+            +eventduration
+        .row
             h4.capitalized-header When can it happen?
         .row
             +calendar
         .row
-            h4.capitalized-header How long will it be?
-            +eventduration
+            br
         .row
             +options
-        .row
-            button#submit.btn.btn-default(type="button") Submit
+            button#submit.btn.btn-default(type="button" style="float: right;") Submit
     +popup             
 block footer
       script(src='/js/index.js', type='text/javascript')

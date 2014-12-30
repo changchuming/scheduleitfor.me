@@ -1,0 +1,11 @@
+mixin eventdetails
+  form#details(role="form")
+    #titlegroup.form-group(data-bind="visible: (Title!='')")
+      label(for="EventTitle") Title
+      #title.form-control.panel.panel-default(data-bind="text: Title") 
+    #detailsgroup.form-group(data-bind="visible: (Details!='')")
+      label(for="EventDetails") Description
+      #details.form-control.panel.panel-default(data-bind="text: Details") 
+    #lengthgroup.form-group
+      label(for="EventLength") Event Length
+      #length.form-control.panel.panel-default(data-bind="text: Length+Mode") 

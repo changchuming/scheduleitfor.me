@@ -54,13 +54,16 @@ export class CalendarDay implements ICalendarDay {
 export class CalendarVm implements ICalendar {
     constructor(private _startOfCalendar: Moment,
     	private availableArray : number[],
+    	private eventLength : number,
         private _months: ICalendarDay[][]= [],
         private _currentMonth : number = 0,
+        public Header : KnockoutObservable<string> = ko.observable('Header'),
         public Days: KnockoutObservableArray<ICalendarDay> = ko.observableArray([])) {
         // Initialize Variables
         this._months.push(this.createCalendarDays(this._startOfCalendar));
         this.Days = ko.observableArray(this._months[this._currentMonth]);
-    }
+        this.updateHeader();
+    } 
     
     public SelectableOptions: JQueryUI.SelectableEvents = {
     		selected: function (event, ui) {
@@ -76,6 +79,10 @@ export class CalendarVm implements ICalendar {
 
     private _daysInWeek = 7;
     
+    public updateHeader() {
+        this.Header(moment(this._startOfCalendar).add(this._currentMonth, 'months').format('MMMM YYYY'));
+    }
+    
     // Switches calendar to next month; Create if not exists
     public nextMonth() {
     	this._currentMonth++;
@@ -84,6 +91,7 @@ export class CalendarVm implements ICalendar {
     		this._months.push(this.createCalendarDays(startOfNextMonth));
     	}
     	this.Days(this._months[this._currentMonth]);
+        this.updateHeader();
     }
     
     // Switches calendar to previous month;
@@ -92,34 +100,47 @@ export class CalendarVm implements ICalendar {
     		this._currentMonth--;
     	}
     	this.Days(this._months[this._currentMonth]);
+    	this.updateHeader();
     }
     
     // Exports selected dates as start day and a number array
-    public exportSelectedDates() {
+    public exportSelectedDates(eventLength:number) {
     	var days = [].concat.apply([], this._months); // Flatten array
     	// Find the first selected day
+    	var rawDaysAsInt = [];
     	var daysAsInt = [];
-    	var startDay;
+    	var startMoment;
     	if (this.availableArray != undefined) {
-    		startDay = this._startOfCalendar;
+    		startMoment = this._startOfCalendar;
     	} else {
     		for (var count = 0; count<days.length; count++) {
         		if (days[count].IsSelected()) {
-        			startDay = days[count];
+        			startMoment = days[count].CalMoment;
         			break;
         		}
         	}
     	}
     	// Convert selected CalendarDay array to integer array
+    	// Get only adjacent days that are as long as event length
     	days.forEach(function (day) {
     		if (day.IsSelected()) {
-    			daysAsInt.push(day.CalMoment.diff(startDay.CalMoment, 'days'));
+    			rawDaysAsInt.push(day.CalMoment.diff(startMoment, 'days'));
     		}
     	});
-    	if (startDay == undefined) {
+    	rawDaysAsInt.forEach(function (day) {
+    		daysAsInt.push(day);
+    		for (var count = 1;count<eventLength;count++) {
+    			if (rawDaysAsInt.indexOf(day+count) == -1) {
+    				daysAsInt.pop();
+    				break;
+    			}
+    		}
+    	});
+    	// Return days
+    	if (daysAsInt.length == 0) {
     		return null;
     	} else {
-    		return { startMoment : startDay.CalMoment, daysAsInt : daysAsInt };
+    		return { startMoment : startMoment, daysAsInt : daysAsInt };
     	}
     }
 
@@ -154,11 +175,15 @@ export class CalendarVm implements ICalendar {
         			|| (startDay.isBefore(this._startOfCalendar))) {
         		calDay.setEnabledStatus(false);
         	}
+        	// Check if day is available
         	else if (this.availableArray != undefined) {
-        		var dayAsInt : number = startDay.diff(this._startOfCalendar, 'days'); 
-    			if (this.availableArray.indexOf(dayAsInt) == -1) {
-    				calDay.setEnabledStatus(false);
-    			}
+        		var dayAsInt : number = startDay.diff(this._startOfCalendar, 'days');
+				calDay.setEnabledStatus(false);
+        		for (var count = 0;count < this.eventLength; count++) {
+        			if (this.availableArray.indexOf(dayAsInt-count) != -1) {
+        				calDay.setEnabledStatus(true);
+        			}
+        		}
         	}
             days.push(calDay);
             startDay.add(1, 'day');

@@ -4,7 +4,6 @@
 /// <reference path="../definitions/knockout.d.ts" />
 /// <reference path="../definitions/browserify.d.ts" />
 /// <reference path="../definitions/moment.d.ts" />
-/// <reference path="../definitions/jqueryui.d.ts" />
 /// <reference path="../definitions/scheduleit.d.ts" />
 
 // Shim JQuery
@@ -24,49 +23,48 @@ require('bootstrap');
 var cal = require('./web/js/components/calendar');
 var touchEvents = require('./web/js/components/touchevents');
 var server = require('./web/js/components/serverfunctions');
+var details = require('./web/js/components/details');
+var popup = require('./web/js/components/popup');
 
 //  Code starts Here
-var MODE_DAYS = 1;
-var MODE_HOURS = 0;
 var calVm;
 declare var schedule;
 declare var data;
 
 //Initialization
 $(function () {
+	// Show calendar
 	var selectedrange = JSON.parse(data.selectedrange);
-    calVm = new cal.CalendarVm(moment(data.startmoment), selectedrange);
-	
-	init_details();
-    init_calendar(calVm);
+    calVm = new cal.CalendarVm(moment(data.startmoment), selectedrange, data.length);
+    touchEvents.InitializeSelection(ko, $);
+    ko.applyBindings(calVm, $('#calendar')[0]);
+    
+    initDetails();
 });
 
-function init_details() {
-	if (data.title != "") {
-		$('#title').val(data.title);
-	} else {
-		$('#titlegroup').hide();
-	}
-	if (data.details != "") {
-		$('#details').val(data.details);
-		$("#details").height( $("#details")[0].scrollHeight-10);
-	} else {
-		$('#detailsgroup').hide();
-	}
-	var mode = (data.mode==MODE_DAYS) ? ' day(s)' : ' hour(s)'
-	$('#length').val(data.length+mode);
+function initDetails() {
+    // Show details
+    var detailsVm = new details.Details(data.title, data.details, data.length, data.mode);
+    ko.applyBindings(detailsVm, $('#details')[0]);
+    // Show name field
 	if (data.anonymous == 1) {
 		$('#usernamegroup').hide();
 	}
-} 
+	// Prevent go in name field
+	$('#username').bind('keydown', function(e) {
+	    if (e.keyCode == 13) {
+	        e.preventDefault();
+	    }
+	});
+}
 
 $('#submit').click(function(){
-	var selectedDates = calVm.exportSelectedDates();
-	if (selectedDates.daysAsInt.length == 0) {
-		showError('Please select dates');
+	var selectedDates = calVm.exportSelectedDates(data.length);
+	if (selectedDates == null) {
+		popup.showMessage('Error', 'Please select dates<br/>Dates must be as long as event length');
 	}
 	else if (data.anonymous == 0 && $('#username').val() == "") {
-		showError('Please enter your name');
+		popup.showMessage('Error', 'Please enter your name');
 	}
 	else {
 		var data2 = {
@@ -76,24 +74,10 @@ $('#submit').click(function(){
 				duplicate: data.duplicate,
 				selectedrange: JSON.stringify(selectedDates.daysAsInt)
 				};
-		server.submitResults(data2, showError);
+		server.submitResults(data2, popup.showMessage);
 	}
 });
 
 $('#results').click(function(){
 	window.location.href = $(location).attr('href')+'/r';
 });
-
-function init_calendar(viewModel) {
-    touchEvents.InitializeSelection(ko, $);
-    ko.applyBindings(viewModel);
-}
-
-function showError(string) {
-	$('#popupheader').text('Error');
-	$('#popupbody').text(string);
-	$('#popupaddress').hide();
-	$('#popuphighlight').hide();
-	$('#popupgoto').hide();
-    (<any>$('#popup')).modal('show');
-}

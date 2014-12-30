@@ -4,7 +4,6 @@
 /// <reference path="../definitions/knockout.d.ts" />
 /// <reference path="../definitions/browserify.d.ts" />
 /// <reference path="../definitions/moment.d.ts" />
-/// <reference path="../definitions/jqueryui.d.ts" />
 /// <reference path="../definitions/scheduleit.d.ts" />
 
 // Shim JQuery
@@ -24,37 +23,39 @@ require('bootstrap');
 var cal = require('./web/js/components/calendar');
 var touchEvents = require('./web/js/components/touchevents');
 var server = require('./web/js/components/serverfunctions');
+var popup = require('./web/js/components/popup');
 
 //  Code starts Here
-var MODE_DAYS = 1;
-var MODE_HOURS = 0;
 var calVm;
 
 //Initialization
 $(function () {
+	// Show calendar
     calVm = new cal.CalendarVm(moment().startOf('day'));
+    touchEvents.InitializeSelection(ko, $);
+    ko.applyBindings(calVm, $('#calendar')[0]);
     
     initSlider();
     initDetails();
-    initCalendar(calVm);
 });
 
 $('#submit').click(function(){
-	var selectedDates = calVm.exportSelectedDates();
+	var selectedDates = calVm.exportSelectedDates($("#EventDurationSlider").slider("value"));
 	if (selectedDates == null) {
-		showError('Please select dates');
+		popup.showMessage('Error', 'Please select dates<br/>Dates must be as long as event length');
 	} else {
+		popup.showMessage('Working', 'Working...');
 		var data = {
 				title: $('#title').val(),
 				details: $('#details').val(),
 				anonymous: $('#anonymous').hasClass('active') ? 1 : 0,
-				duplicate: $('#duplicate').hasClass('active') ? 1 : 0,
+				duplicate: $('#duplicate').hasClass('active') ? 0 : 1,
 				length: $("#EventDurationSlider").slider("value"),
 				startmoment: selectedDates.startMoment.format(),
 				mode: $('#days').hasClass('active') ? 1 : 0,
 				selectedrange: JSON.stringify(selectedDates.daysAsInt)
 				};
-		server.createSchedule(data, showSuccess, showError);
+		server.createSchedule(data, showSuccess, popup.showMessage);
 	}
 });
 
@@ -65,10 +66,10 @@ function initSlider() {
     	max: 14,
     	value: 1,
     	slide: function(event, ui) {
-    	  $("#length").val(ui.value);
+    	  $("#length").html(ui.value);
     	}
     });
-    $("#length").val('1');
+    $("#length").html('1');
 }
 
 function initDetails() {
@@ -77,20 +78,6 @@ function initDetails() {
 	        e.preventDefault();
 	    }
 	});
-}
-
-function initCalendar(viewModel) {
-    touchEvents.InitializeSelection(ko, $);
-    ko.applyBindings(viewModel);
-}
-
-function showError(string) {
-	$('#popupheader').text('Error');
-	$('#popupbody').text(string);
-	$('#popupaddress').hide();
-	$('#popuphighlight').hide();
-	$('#popupgoto').hide();
-    (<any>$('#popup')).modal('show');
 }
 
 function showSuccess(schedule) {

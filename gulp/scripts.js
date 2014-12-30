@@ -1,10 +1,12 @@
 var gulp = require('gulp'),
     plugins = require('gulp-load-plugins')(),
     gutil = require('gulp-util'),
+    uglify = require('gulp-uglify'),
     config = require('./config.json'),
     sources = config.sources,
     browserify = require('browserify'),
     source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
     debowerify = require('debowerify'),
     path = require('path'),
     del = require('del');
@@ -54,6 +56,8 @@ gulp.task('scripts', ['typescript'], function(){
             .transform('debowerify')
             .bundle()
             .pipe(source('./' + path.basename(file.path))) //.pipe(plugins.streamify(plugins.uglify()))
+            .pipe(buffer())
+            .pipe(uglify())
             .pipe(gulp.dest(sources.build_dir + "/js"));
         }))
         .on('error', function(error){console.log(error)});

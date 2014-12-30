@@ -1,4 +1,5 @@
-﻿/// <reference path="./knockout.d.ts" />
+/// <reference path="./moment.d.ts" />
+/// <reference path="./knockout.d.ts" />
 
 interface KnockoutBindingHandlers {
     selectable: KnockoutBindingHandler;
@@ -6,6 +7,7 @@ interface KnockoutBindingHandlers {
 }
 
 interface ICalendarDay {
+	CalMoment: Moment;
     Status: KnockoutComputed<string>;
     IsSelected: KnockoutObservable<boolean>;
     DateText: string;
@@ -13,6 +15,26 @@ interface ICalendarDay {
 
 interface ICalendar {
     Days: KnockoutObservableArray<ICalendarDay>;
+}
+
+interface IResultEntry {
+	CalMoment: Moment;
+	DayAsInt; //Funny bug: will be considered string if casted to number
+	Response: KnockoutObservable<number>;
+	TotalResponse: KnockoutObservable<number>;
+    DateText: KnockoutObservable<string>;
+    updateEntry(moment:Moment, dayAsInt:number, response:number, totalresponse:number): void;
+}
+
+interface IResultSet {
+	Set: KnockoutObservableArray<IResultEntry>;
+}
+
+interface IDetails {
+	Title : string;
+	Details:string;
+	Length:string;
+	Mode:string;
 }
 
 interface JQuery {

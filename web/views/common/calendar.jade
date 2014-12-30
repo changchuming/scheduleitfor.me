@@ -1,5 +1,12 @@
 mixin calendar
-  .calendar
+  #calendar
+    nav
+    .input-group
+      span.input-group-btn
+          button.btn.btn-default(type="button" data-bind="click: prevMonth") Prev
+      h3(align="center" data-bind="text: Header")
+      span.input-group-btn
+        button.btn.btn-default(type="button" data-bind="click: nextMonth") Next
     .day_names.cal_row
       div Mon
         span day
@@ -17,6 +24,3 @@ mixin calendar
         span day
     .cal_row(data-bind="foreach: Days, selectable: SelectableOptions")
       div.ui-state-default(data-bind="text: DateText, css: Status")
-    .btn-group(role="group" aria-label="shift-calendar")
-      button.btn.btn-default(type="button" data-bind="click: prevMonth") Prev
-      button.btn.btn-default(type="button" data-bind="click: nextMonth") Next
