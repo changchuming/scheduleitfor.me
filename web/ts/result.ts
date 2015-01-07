@@ -20,11 +20,11 @@ require('jquery-ui-touch-punch');
 require('bootstrap');
 
 // Load Internal Dependencies
-var touchEvents = require('./web/js/components/touchevents');
 var server = require('./web/js/components/serverfunctions');
 var list = require('./web/js/components/list');
 var details = require('./web/js/components/details');
 var popup = require('./web/js/components/popup');
+var navbar = require('./web/js/components/navbar');
 
 // Load variables
 declare var io;
@@ -33,18 +33,17 @@ declare var data;
 
 //  Code starts Here
 var listVm;
-var topten : number[] = [];
 var usercount = 0;
 var MODE_DAYS = 1;
 var MODE_HOURS = 0;
 var available:string = '';
 var unavailable:string = '';
-var dayAsInt:number = 0;
+var sequenceIndex:number = 0;
 
 //Initialization
 $(function () {
 	// Show results list
-	listVm = new list.ResultSet(moment(data.startmoment), data.length);
+	listVm = new list.ResultSet(moment(data.startmoment), data.length, data.mode);
     ko.applyBindings(listVm, $('#resultlist')[0]);
     // Show details
     var detailsVm = new details.Details(data.title, data.details, data.length, data.mode);
@@ -52,18 +51,18 @@ $(function () {
 	
 	connect();
 	join(schedule);
-	listen('topten', displayTopTen);
+	listen('top', displayTop);
     listen('availability', updateAvailability);
 });
 
 // Show availability
-$(document).on('click','.availability',function(){
+$(document).on('click','.availability', function(){
 	popup.showMessage('No details available', 'No details available');
     
     // Get availability details
     var viewmodel : IResultEntry = ko.dataFor(this);
-    dayAsInt = parseInt(viewmodel.DayAsInt);
-    var data = {schedule: schedule, day: dayAsInt};
+    sequenceIndex = parseInt(viewmodel.SequenceIndex);
+    var data = {schedule: schedule, sequenceindex: sequenceIndex};
     server.getAvailability(data, showAvailability, popup.showMessage);
     });
 
@@ -80,25 +79,31 @@ function showAvailability(data) {
 			unavailable += userList[count] + '<br/>';
 		}
 	}
-	var availableText = '<b>Available</b><br/>' + available + '<br/><b>Unavailable</b><br/>' + unavailable;
+	var availableText = '<b>Available</b><br/>'
+		+ available
+		+ '<br/><b>Unavailable</b><br/>' 
+		+ unavailable;
 	popup.showMessage('Details', availableText);
 }
 
 function updateAvailability(data) {
 	var selectedRange = $.map(JSON.parse(data.selectedrange), Number);
-	if (selectedRange.indexOf(dayAsInt) == -1) {
+	if (selectedRange.indexOf(sequenceIndex) == -1) {
 		unavailable += data.username + '<br/>';
 	} else {
 		available += data.username + '<br/>';
 	}
-	var availableText = '<b>Available</b><br/>' + available + '<br/><b>Unavailable</b><br/>' + unavailable;
+	var availableText = '<b>Available</b><br/>' 
+		+ available 
+		+ '<br/><b>Unavailable</b><br/>' 
+		+ unavailable;
 	popup.showMessage('Details', availableText);
 }
 
-function displayTopTen(data) {
-	var topTen = JSON.parse(data.topten);
-	if (data.topten.length != 0) {
-		listVm.updateSet(topTen, data.usercount);
+function displayTop(data) {
+	var top = JSON.parse(data.top);
+	if (data.top.length != 0) {
+		listVm.updateSet(top, data.usercount);
 	} else {
 		$('#resultlist').html('No results found!');
 	}

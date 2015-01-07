@@ -3,6 +3,10 @@ $bgHighlight    : #dbdbdb;
 $colDefault     : #969696;
 $colHighlight   : #000000;
 
+#help, #about {
+    cursor: pointer;
+}
+
 .navbar{
     border-radius: 0px;
     margin-bottom: 0px;

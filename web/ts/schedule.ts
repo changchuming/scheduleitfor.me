@@ -25,19 +25,32 @@ var touchEvents = require('./web/js/components/touchevents');
 var server = require('./web/js/components/serverfunctions');
 var details = require('./web/js/components/details');
 var popup = require('./web/js/components/popup');
+var navbar = require('./web/js/components/navbar');
 
 //  Code starts Here
 var calVm;
 declare var schedule;
 declare var data;
 
+//Mode definitions
+var MODE_DAY = 1;
+var MODE_HOUR = 0;
+
 //Initialization
 $(function () {
 	// Show calendar
 	var selectedrange = JSON.parse(data.selectedrange);
-    calVm = new cal.CalendarVm(moment(data.startmoment), selectedrange, data.length);
-    touchEvents.InitializeSelection(ko, $);
-    ko.applyBindings(calVm, $('#calendar')[0]);
+	if (data.mode == MODE_DAY) {
+		calVm = new cal.CalendarMonthVm(moment(data.startmoment), selectedrange, data.length);
+	    touchEvents.InitializeSelection(ko, $);
+		ko.applyBindings(calVm, $('#calendarmonth')[0]);
+		$('#calendarmonth').show();
+	} else {
+		calVm = new cal.CalendarWeekVm(moment(data.startmoment), selectedrange, data.length);
+	    touchEvents.InitializeSelection(ko, $);
+		ko.applyBindings(calVm, $('#calendarweek')[0]);
+		$('#calendarweek').show();
+	}
     
     initDetails();
 });
@@ -51,7 +64,7 @@ function initDetails() {
 		$('#usernamegroup').hide();
 	}
 	// Prevent go in name field
-	$('#username').bind('keydown', function(e) {
+	$('.inputfield').bind('keydown', function(e) {
 	    if (e.keyCode == 13) {
 	        e.preventDefault();
 	    }
@@ -61,7 +74,7 @@ function initDetails() {
 $('#submit').click(function(){
 	var selectedDates = calVm.exportSelectedDates(data.length);
 	if (selectedDates == null) {
-		popup.showMessage('Error', 'Please select dates<br/>Dates must be as long as event length');
+		popup.showMessage('Error', 'Please select time slots<br/>Time slots must be as long as event length');
 	}
 	else if (data.anonymous == 0 && $('#username').val() == "") {
 		popup.showMessage('Error', 'Please enter your name');
@@ -72,7 +85,7 @@ $('#submit').click(function(){
 				username: $('#username').val(),
 				anonymous: data.anonymous,
 				duplicate: data.duplicate,
-				selectedrange: JSON.stringify(selectedDates.daysAsInt)
+				selectedrange: JSON.stringify(selectedDates.selectedRange)
 				};
 		server.submitResults(data2, popup.showMessage);
 	}

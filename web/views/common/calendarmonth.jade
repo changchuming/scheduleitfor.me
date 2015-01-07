@@ -1,12 +1,11 @@
-mixin calendar
-  #calendar
+mixin calendarmonth
     nav
     .input-group
       span.input-group-btn
-          button.btn.btn-default(type="button" data-bind="click: prevMonth") Prev
+          button.btn.btn-default(type="button" data-bind="click: prev") Prev
       h3(align="center" data-bind="text: Header")
       span.input-group-btn
-        button.btn.btn-default(type="button" data-bind="click: nextMonth") Next
+        button.btn.btn-default(type="button" data-bind="click: next") Next
     .day_names.cal_row
       div Mon
         span day
@@ -14,13 +13,13 @@ mixin calendar
         span sday
       div Wed
         span nesday
-      div Thur
-        span sday
+      div Thu
+        span rsday
       div Fri
         span day
       div Sat
         span urday
       div Sun
         span day
-    .cal_row(data-bind="foreach: Days, selectable: SelectableOptions")
+    .cal_row(data-bind="foreach: Collection, selectable: SelectableOptions")
       div.ui-state-default(data-bind="text: DateText, css: Status")

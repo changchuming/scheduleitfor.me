@@ -24,39 +24,61 @@ var cal = require('./web/js/components/calendar');
 var touchEvents = require('./web/js/components/touchevents');
 var server = require('./web/js/components/serverfunctions');
 var popup = require('./web/js/components/popup');
+var navbar = require('./web/js/components/navbar');
 
 //  Code starts Here
-var calVm;
+var calMonthVm,
+	calWeekVm;
 
 //Initialization
 $(function () {
 	// Show calendar
-    calVm = new cal.CalendarVm(moment().startOf('day'));
+    calMonthVm = new cal.CalendarMonthVm(moment().startOf('day'));
     touchEvents.InitializeSelection(ko, $);
-    ko.applyBindings(calVm, $('#calendar')[0]);
+    ko.applyBindings(calMonthVm, $('#calendarmonth')[0]);
     
     initSlider();
     initDetails();
 });
 
-$('#submit').click(function(){
-	var selectedDates = calVm.exportSelectedDates($("#EventDurationSlider").slider("value"));
+$('#create').click(function(){
+	if ($('#days').hasClass('active')) {
+		var selectedDates = calMonthVm.exportSelectedDates($("#EventDurationSlider").slider("value"));
+	} else {
+		var selectedDates = calWeekVm.exportSelectedDates($("#EventDurationSlider").slider("value"));
+	}
+	
 	if (selectedDates == null) {
-		popup.showMessage('Error', 'Please select dates<br/>Dates must be as long as event length');
+		popup.showMessage('Error', 'Please select time slots<br/>Time slots must be as long as event length');
 	} else {
 		popup.showMessage('Working', 'Working...');
 		var data = {
 				title: $('#title').val(),
-				details: $('#details').val(),
+				details: $('#description').val(),
 				anonymous: $('#anonymous').hasClass('active') ? 1 : 0,
 				duplicate: $('#duplicate').hasClass('active') ? 0 : 1,
 				length: $("#EventDurationSlider").slider("value"),
 				startmoment: selectedDates.startMoment.format(),
 				mode: $('#days').hasClass('active') ? 1 : 0,
-				selectedrange: JSON.stringify(selectedDates.daysAsInt)
+				selectedrange: JSON.stringify(selectedDates.selectedRange)
 				};
 		server.createSchedule(data, showSuccess, popup.showMessage);
 	}
+});
+
+$('#hours').click(function(){
+	if (calWeekVm == undefined) {
+		// Show calendar
+	    calWeekVm = new cal.CalendarWeekVm(moment().startOf('day'));
+	    ko.applyBindings(calWeekVm, $('#calendarweek')[0]);
+	}
+	$('#calendarweek').show();
+	$('#calendarmonth').hide();
+});
+
+$('#days').click(function(){
+	$('#calendarweek').hide();
+	$('#calendarmonth').show();
 });
 
 function initSlider() {
@@ -73,7 +95,7 @@ function initSlider() {
 }
 
 function initDetails() {
-	$('#title').bind('keydown', function(e) {
+	$('.inputfield').bind('keydown', function(e) {
 	    if (e.keyCode == 13) {
 	        e.preventDefault();
 	    }

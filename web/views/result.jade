@@ -1,21 +1,29 @@
 include ./common/navbar.jade
 include ./common/popup.jade
+include ./common/help.jade
+include ./common/about.jade
 include ./common/details.jade
+include ./common/frame.jade
 include ./result/list.jade
 
 extends layout
 
 block styles
-    link(rel='stylesheet', href='/css/index.css')
+    link(rel='stylesheet', href='/css/result.css')
 block content
     +navbar
     .content.container-fluid
         .row
-            +eventdetails
+            +frame('panel-success', 'Event details')
+              #details
+                +details
         .row
-            label(for="Available") Most available
-            +list
-    +popup
+            +frame('panel-info', 'Most available time slots')
+              #resultlist
+                +list
+        +popup
+        +help
+        +about
 block footer
       script.
         var schedule = !{schedule}

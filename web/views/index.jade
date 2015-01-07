@@ -1,6 +1,10 @@
 include ./common/navbar.jade
-include ./common/calendar.jade
+include ./common/calendarmonth.jade
+include ./common/calendarweek.jade
 include ./common/popup.jade
+include ./common/help.jade
+include ./common/about.jade
+include ./common/frame.jade
 include ./index/eventdetails.jade
 include ./index/eventduration.jade
 include ./index/options.jade
@@ -13,21 +17,22 @@ block content
     +navbar
     .content.container-fluid
         .row
-            h4.capitalized-header What's the Event?
+            +frame('panel-success', 'What\'s the Event?')
+              +eventdetails
         .row
-            +eventdetails
+            +frame('panel-info', 'How long will it be?')
+              +eventduration
         .row
-            h4.capitalized-header How long will it be?
-            +eventduration
-        .row
-            h4.capitalized-header When can it happen?
-        .row
-            +calendar
-        .row
-            br
+            +frame('panel-warning', 'When can it happen?')
+              #calendarmonth
+                +calendarmonth
+              #calendarweek(hidden='hidden')
+                +calendarweek
         .row
             +options
-            button#submit.btn.btn-default(type="button" style="float: right;") Submit
-    +popup             
+            button#create.btn.btn-default(type="button" style="float: right;") Create            
+        +popup
+        +help
+        +about
 block footer
       script(src='/js/index.js', type='text/javascript')

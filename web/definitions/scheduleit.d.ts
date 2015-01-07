@@ -6,7 +6,7 @@ interface KnockoutBindingHandlers {
     selectableItem: KnockoutBindingHandler;
 }
 
-interface ICalendarDay {
+interface ICalendarUnit {
 	CalMoment: Moment;
     Status: KnockoutComputed<string>;
     IsSelected: KnockoutObservable<boolean>;
@@ -14,16 +14,15 @@ interface ICalendarDay {
 }
 
 interface ICalendar {
-    Days: KnockoutObservableArray<ICalendarDay>;
+    Collection: KnockoutObservableArray<ICalendarUnit>;
 }
 
 interface IResultEntry {
 	CalMoment: Moment;
-	DayAsInt; //Funny bug: will be considered string if casted to number
+	SequenceIndex; //Funny bug: will be considered string if casted to number
 	Response: KnockoutObservable<number>;
 	TotalResponse: KnockoutObservable<number>;
     DateText: KnockoutObservable<string>;
-    updateEntry(moment:Moment, dayAsInt:number, response:number, totalresponse:number): void;
 }
 
 interface IResultSet {

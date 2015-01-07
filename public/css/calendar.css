@@ -1,21 +1,29 @@
-.calendar {
+#calendar {
   overflow: hidden;
-  margin: 10px 5px 0px 0px; }
+  margin: 0px 0px 0px 0px; }
 
 .cal_row {
   overflow: hidden; }
   .cal_row > .ui-selectable-helper {
     display: none; }
   .cal_row > .selectedfilter {
-    background: green; }
+    background: limegreen; }
   .cal_row > .ui-selecting {
     background: lightgreen; }
   .cal_row > .ui-unselecting {
     background: grey; }
   .cal_row > .false {
     background: lightgrey; }
+  .cal_row > div.hour {
+    width: 12.5%;
+    height: 30px; }
+  .cal_row > div.hour.header {
+    line-height: 30px;
+    text-align: center;
+    font-weight: bold;
+    background: white; }
   .cal_row > div {
-    width: 14%;
+    width: 14.28%;
     height: 100px;
     float: left;
     display: block;

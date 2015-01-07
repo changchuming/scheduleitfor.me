@@ -1,7 +1,11 @@
 include ./common/navbar.jade
-include ./common/calendar.jade
+include ./common/calendarmonth.jade
+include ./common/calendarweek.jade
 include ./common/popup.jade
+include ./common/help.jade
+include ./common/about.jade
 include ./common/details.jade
+include ./common/frame.jade
 include ./schedule/username.jade
 
 extends layout
@@ -12,18 +16,23 @@ block content
     +navbar
     .content.container-fluid
         .row
-            +eventdetails
+            +frame('panel-success', 'Event details')
+              #details
+                +details
         .row
-            h4.capitalized-header When can you make it?
-            +username
-        .row
-            +calendar
-        .row
-            br
+            +frame('panel-info', 'When can you make it?')
+              #usernamegroup
+                +username
+              #calendarmonth(hidden='hidden')
+                +calendarmonth
+              #calendarweek(hidden='hidden')
+                +calendarweek
         .row
             button#results.btn.btn-default(type="button" style="float: right;") Results
             button#submit.btn.btn-default(type="button" style="float: right;") Submit
-    +popup
+        +popup
+        +help
+        +about
 block footer
       script.
         var schedule = !{schedule}

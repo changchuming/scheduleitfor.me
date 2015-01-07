@@ -34,7 +34,7 @@ exports.display = function(req, res){
 //##############################################################################################
 exports.availability = function(req, res) {
     redisClient.lrange('schedule:'+req.body.schedule+':userlist', 0, -1, function(err, userlist) {
-        redisClient.lrange('schedule:'+req.body.schedule+':userlist:'+req.body.day, 0, -1, function(err, availablearray) {
+        redisClient.lrange('schedule:'+req.body.schedule+':userlist:'+req.body.sequenceindex, 0, -1, function(err, availablearray) {
             var data = {userlist: JSON.stringify(userlist), availablearray: JSON.stringify(availablearray)};
             res.send(data);
         })
@@ -54,10 +54,10 @@ app.io.route('leave', function(req) {
 
 var broadcastSchedule = function(schedule) {
     // Get first 10 available dates of result set
-    redisClient.zrevrange('schedule:'+schedule+':selectedrange', 0, 9, 'withscores', function(err, topten) {
+    redisClient.zrevrange('schedule:'+schedule+':selectedrange', 0, 29, 'withscores', function(err, top) {
         redisClient.get('schedule:'+schedule+':usercount', function(err, usercount) {
-            var data = {topten: JSON.stringify(topten), usercount: usercount};
-            app.io.room(schedule).broadcast('topten', data);
+            var data = {top: JSON.stringify(top), usercount: usercount};
+            app.io.room(schedule).broadcast('top', data);
         });
     });
 }

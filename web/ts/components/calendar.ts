@@ -8,34 +8,36 @@
 import moment = require('moment');
 import ko = require('knockout');
 
-export class CalendarDay implements ICalendarDay {
+var DAYS_IN_WEEK = 7;
+var HOURS_IN_DAY = 24;
+
+// #############################################################################
+// Each day of a CalendarMonth view model
+// #############################################################################
+export class CalendarDay implements ICalendarUnit {
     constructor(public CalMoment : Moment,
         	public IsEnabled : KnockoutObservable<boolean> = ko.observable(true),
             public DateText : string = "",
             public IsSelected : KnockoutObservable<boolean> = ko.observable(false)) {
             //Initialization
-            this.DateText = this._getDateText();
+            this.DateText = this.getDateText();
         }
 
     public Status: KnockoutComputed<string> = ko.computed((): string => {
         var status = "";
         status += this.IsEnabled();
         status += " ";
-        status += this._getSelectedStatus();
+        status += this.getSelectedStatus();
         return status; 
     }, this);
-
-    public getDate() : Moment {
-    	return this.CalMoment;
-    }
     
     // Returns the text that will be displayed on the calendar
     // based on the current date
-    private _getDateText(): string {
+    protected getDateText(): string {
         return this.CalMoment.date().toString();
     }
 
-    private _getSelectedStatus(): string {
+    protected getSelectedStatus(): string {
         return this.IsSelected() ? "selectedfilter" : "";
     }
     
@@ -51,19 +53,24 @@ export class CalendarDay implements ICalendarDay {
     }
 }
 
-export class CalendarVm implements ICalendar {
-    constructor(private _startOfCalendar: Moment,
-    	private availableArray : number[],
-    	private eventLength : number,
-        private _months: ICalendarDay[][]= [],
-        private _currentMonth : number = 0,
+// #############################################################################
+// CalendarMonth view model
+// #############################################################################
+export class CalendarMonthVm implements ICalendar {
+    constructor(protected startOfCalendar: Moment,
+    	protected availableArray : number[],
+    	protected eventLength : number,
+        protected collections: ICalendarUnit[][]= [],
+        protected currentIndex : number = 0,
         public Header : KnockoutObservable<string> = ko.observable('Header'),
-        public Days: KnockoutObservableArray<ICalendarDay> = ko.observableArray([])) {
+        public Collection: KnockoutObservableArray<ICalendarUnit> = ko.observableArray([])) {
         // Initialize Variables
-        this._months.push(this.createCalendarDays(this._startOfCalendar));
-        this.Days = ko.observableArray(this._months[this._currentMonth]);
+        this.collections.push(this.createCollection(moment(this.startOfCalendar)));
+        this.Collection = ko.observableArray(this.collections[this.currentIndex]);
         this.updateHeader();
     } 
+    
+	public Day : KnockoutObservableArray<string> = ko.observableArray([]);
     
     public SelectableOptions: JQueryUI.SelectableEvents = {
     		selected: function (event, ui) {
@@ -76,42 +83,40 @@ export class CalendarVm implements ICalendar {
     			// Custom events
     		}
     }
-
-    private _daysInWeek = 7;
     
     public updateHeader() {
-        this.Header(moment(this._startOfCalendar).add(this._currentMonth, 'months').format('MMMM YYYY'));
+        this.Header(moment(this.startOfCalendar).add(this.currentIndex, 'months').format('MMMM YYYY'));
     }
     
     // Switches calendar to next month; Create if not exists
-    public nextMonth() {
-    	this._currentMonth++;
-    	if (this._currentMonth >= this._months.length) {
-    		var startOfNextMonth = moment(this._startOfCalendar).add(this._currentMonth, 'months');
-    		this._months.push(this.createCalendarDays(startOfNextMonth));
+    public next() {
+    	this.currentIndex++;
+    	if (this.currentIndex >= this.collections.length) {
+    		var startOfNextMonth = moment(this.startOfCalendar).add(this.currentIndex, 'months');
+    		this.collections.push(this.createCollection(startOfNextMonth));
     	}
-    	this.Days(this._months[this._currentMonth]);
+    	this.Collection(this.collections[this.currentIndex]);
         this.updateHeader();
     }
     
     // Switches calendar to previous month;
-    public prevMonth() {
-    	if (this._currentMonth > 0) {
-    		this._currentMonth--;
+    public prev() {
+    	if (this.currentIndex > 0) {
+    		this.currentIndex--;
     	}
-    	this.Days(this._months[this._currentMonth]);
+    	this.Collection(this.collections[this.currentIndex]);
     	this.updateHeader();
     }
     
     // Exports selected dates as start day and a number array
     public exportSelectedDates(eventLength:number) {
-    	var days = [].concat.apply([], this._months); // Flatten array
+    	var days = [].concat.apply([], this.collections); // Flatten array
     	// Find the first selected day
     	var rawDaysAsInt = [];
     	var daysAsInt = [];
     	var startMoment;
     	if (this.availableArray != undefined) {
-    		startMoment = this._startOfCalendar;
+    		startMoment = this.startOfCalendar;
     	} else {
     		for (var count = 0; count<days.length; count++) {
         		if (days[count].IsSelected()) {
@@ -140,17 +145,15 @@ export class CalendarVm implements ICalendar {
     	if (daysAsInt.length == 0) {
     		return null;
     	} else {
-    		return { startMoment : startMoment, daysAsInt : daysAsInt };
+    		return { startMoment : startMoment, selectedRange : daysAsInt };
     	}
     }
 
-    // Fills out a 5 x 7 (35) element array of days showing the
-    // days in the month and a few from the prev month and next month
-    private createCalendarDays(StartOfMonth: Moment): ICalendarDay[] {
+    // Fills out an array of days in a month
+    protected createCollection(StartOfMonth: Moment): ICalendarUnit[] {
         var startDay = moment(StartOfMonth).startOf('month'),
             endDay = moment(StartOfMonth).endOf('month'),
-            currMonth = moment(StartOfMonth).month(),
-            days: ICalendarDay[] = [];
+            days: ICalendarUnit[] = [];
 
         //Check if the start of the month coincides with a Monday.
         // If not, add days starting from the prev month.
@@ -165,19 +168,19 @@ export class CalendarVm implements ICalendar {
         // the number of days in the week for the calendar. If not add next
         // month's days
         if (endDay.day() != 0) {
-            endDay.add(this._daysInWeek - endDay.day(), 'days');
+            endDay.add(DAYS_IN_WEEK - endDay.day(), 'days');
         }
 
         // Create CalendarDay objects for each date
         while (!moment(startDay).isAfter(endDay, "day")) {
             var calDay = new CalendarDay(moment(startDay));
         	if (startDay.month()!=StartOfMonth.month()
-        			|| (startDay.isBefore(this._startOfCalendar))) {
+        			|| (startDay.isBefore(this.startOfCalendar))) {
         		calDay.setEnabledStatus(false);
         	}
         	// Check if day is available
         	else if (this.availableArray != undefined) {
-        		var dayAsInt : number = startDay.diff(this._startOfCalendar, 'days');
+        		var dayAsInt : number = startDay.diff(this.startOfCalendar, 'days');
 				calDay.setEnabledStatus(false);
         		for (var count = 0;count < this.eventLength; count++) {
         			if (this.availableArray.indexOf(dayAsInt-count) != -1) {
@@ -190,5 +193,136 @@ export class CalendarVm implements ICalendar {
         }
 
         return days;
+    }
+}
+
+// #############################################################################
+// Dummy unit displaying hour in CalendarWeek view model
+// #############################################################################
+export class DummyHour implements ICalendarUnit {
+	constructor (public DateText,
+	public Status = ko.computed(function() {return 'hour header false'}),
+	public CalMoment = null,
+	public IsSelected = ko.observable(false)) {
+		// Initialization
+	}
+    public toggleSelectedStatus() {} // Empty function
+}
+
+// #############################################################################
+// Each hour of a CalendarWeek view model
+// #############################################################################
+export class CalendarHour extends CalendarDay {
+    public Status: KnockoutComputed<string> = ko.computed((): string => {
+        var status = "hour ";
+        status += this.IsEnabled();
+        status += " ";
+        status += this.getSelectedStatus();
+        return status; 
+    }, this);
+	
+    // Returns the text that will be displayed on the calendar
+    // based on the current hour
+    protected getDateText(): string {
+        return '';
+    }
+}
+
+// #############################################################################
+// CalendarWeek view model
+// #############################################################################
+export class CalendarWeekVm extends CalendarMonthVm {	
+    public updateHeader() {
+    	this.Day.removeAll();
+    	var startDay = moment(this.startOfCalendar).add(this.currentIndex, 'weeks').startOf('week').add(1, 'days');
+    	var headerText = startDay.format('Do');
+    	for (var day=0;day<DAYS_IN_WEEK;day++) {
+    		this.Day.push(startDay.format('Do'));
+    		startDay.add(1, 'days');
+    	}
+    	headerText += ' to '
+    	headerText += startDay.subtract(1, 'days').format('Do, MMMM YYYY');
+        this.Header(headerText);
+    }
+    
+    // Switches calendar to next week; Create if not exists
+    public next() {
+    	this.currentIndex++;
+    	if (this.currentIndex >= this.collections.length) {
+    		var startOfNextWeek = moment(this.startOfCalendar).add(this.currentIndex, 'weeks');
+    		this.collections.push(this.createCollection(startOfNextWeek));
+    	}
+    	this.Collection(this.collections[this.currentIndex]);
+        this.updateHeader();
+    }
+    
+    // Exports selected dates as start day and a number array
+    public exportSelectedDates(eventLength:number) {
+    	var hours = [].concat.apply([], this.collections); // Flatten array
+    	// Find the first selected day
+    	var rawHoursAsInt = [];
+    	var hoursAsInt = [];
+    	var startMoment;
+    	if (this.availableArray != undefined) {
+    		startMoment = this.startOfCalendar;
+    	} else {
+    		for (var count = 0; count<hours.length; count++) {
+        		if (hours[count].IsSelected()) {
+        			startMoment = hours[count].CalMoment;
+        			break;
+        		}
+        	}
+    	}
+    	// Convert selected CalendarHour array to integer array
+    	// Get only adjacent hours that are as long as event length
+    	hours.forEach(function (hour) {
+    		if (hour.IsSelected()) {
+    			rawHoursAsInt.push(hour.CalMoment.diff(startMoment, 'hours'));
+    		}
+    	});
+    	rawHoursAsInt.forEach(function (hour) {
+    		hoursAsInt.push(hour);
+    		for (var count = 1;count<eventLength;count++) {
+    			if (rawHoursAsInt.indexOf(hour+count) == -1) {
+    				hoursAsInt.pop();
+    				break;
+    			}
+    		}
+    	});
+    	// Return days
+    	if (hoursAsInt.length == 0) {
+    		return null;
+    	} else {
+    		return { startMoment : startMoment, selectedRange : hoursAsInt };
+    	}
+    }
+    
+    // Fills out an array of hours in a week
+    protected createCollection(StartOfWeek: Moment): ICalendarUnit[] {
+        var startDay = moment(StartOfWeek.subtract(1, 'days')).startOf('week').add(1, 'days'),
+            hours: ICalendarUnit[] = [];
+        
+        // Create CalendarHour objects for each hour
+    	for (var hour=0;hour<HOURS_IN_DAY;hour++) {
+    		var hourHeader = new DummyHour(moment(startDay).add(hour, 'hour').format('ha'));
+    		hours.push(hourHeader);
+    		for (var day=0;day<DAYS_IN_WEEK;day++) {
+        		var calMoment = moment(startDay).add(hour, 'hour').add(day, 'days');
+        		var calHour = new CalendarHour(calMoment);
+            	if (calMoment.isBefore(this.startOfCalendar)) {
+            		calHour.setEnabledStatus(false);
+            	} else if (this.availableArray != undefined) {
+            		var hourAsInt : number = calMoment.diff(this.startOfCalendar, 'hours');
+    				calHour.setEnabledStatus(false);
+            		for (var count = 0;count < this.eventLength; count++) {
+            			if (this.availableArray.indexOf(hourAsInt-count) != -1) {
+            				calHour.setEnabledStatus(true);
+            			}
+            		}
+            	}
+                hours.push(calHour);
+        	}
+        }
+        return hours;
     }
 }
