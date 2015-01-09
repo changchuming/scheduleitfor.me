@@ -1,0 +1,14 @@
+mixin popup
+  #popup.modal.fade(aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1")
+      .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;               
+              h4#popupheader.modal-title Header     
+            .modal-body
+              p#popupbody(style="text-align:center") Body
+              input#popupaddress.form-control(type='text' readonly='readonly' style="text-align: center;")       
+            .modal-footer
+              button#popuphighlight.btn.btn-primary(type='button') Highlight
+              button#popupgoto.btn.btn-primary(type='button') Go
+              button.btn.btn-default(type='button', data-dismiss='modal') Close    

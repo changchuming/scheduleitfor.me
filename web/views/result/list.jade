@@ -1,0 +1,10 @@
+mixin list
+    p(data-bind="text: TotalResponse()==-1 ? 'Loading...' : TotalResponse()==0 ? 'No results found' : ''")
+    div(data-bind="foreach: Set")
+      ul.list-group
+        li.list-group-item(data-bind="css: {'list-group-item-success': $index()%2 == 0, 'list-group-item-warning': $index()%2 == 1 }")
+          span(data-bind="text:  ($index() + 1)+'. '+DateText()") 
+          span.badge.availability Details
+        .progress
+          .progress-bar(data-bind="style:{width: Percent() + '%'}, css: { 'progress-bar-success': $index()%2 == 0, 'progress-bar-warning': $index()%2 == 1 }, role='progressbar', aria-valuemin='0', aria-valuemax='5'")
+            .span(data-bind="text:  Percent().toFixed(2) + '% (' + Response() + '/' + TotalResponse() + ')'")

@@ -1,0 +1,44 @@
+mixin help
+  #popuphelp.modal.fade(aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1")
+      .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;               
+              h4.modal-title Help
+            .modal-body
+              p(style="text-align:left")
+                b Scheduleitfor.me 
+                | helps you to schedule your events effortlessly. Select a range of dates that your friends can vote for, share the link generated, and view the results in real-time! Set up a schedule in under ten seconds through our click and drag interface.
+                br
+                br
+                b Create a schedule
+                br
+                | 1. Optionally, fill in the title and details of your event.
+                br
+                | 2. Select the length of the event by dragging the slider.
+                br
+                | 3. Click or drag to select the range of dates that the participants can vote for.
+                br
+                | 4. Select whether you want the participants to vote anonymously and whether each IP is limited to one vote.
+                br
+                | 5. Click 'Create' to get the generated link and share it with your friends!
+                br
+                br
+                b Vote
+                br
+                | 1. Fill in your name if required.
+                br
+                | 2. Click or drag to select the range of dates that you are available on.
+                br
+                | 3. Click 'Submit' to vote!
+                br
+                br
+                b Results
+                br
+                | Click 'Details' to get the names of participants for each available date.
+                br
+                br
+                | By using this service you agree to the terms of usage listed 
+                a(href='') here.
+            .modal-footer
+              button.btn.btn-default(type='button', data-dismiss='modal') Close

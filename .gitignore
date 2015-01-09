@@ -8,14 +8,23 @@ logs
 Thumbs.db
 
 # Runtime data
+redis
 
 # Compiled and Temp Stuff
 dist
-src/temp
+public
 
 # Dependency directory
 node_modules
 bower_components
+web/scss/lib
+web/js
 
 # Users Environment Variables
 .lock-wscript
+
+# Visual Studio Files
+*.njsproj
+obj
+*.sln
+*.ntvs_analysis.dat

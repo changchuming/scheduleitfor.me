@@ -2,11 +2,17 @@
     "sources" : {
         "source_dir" :  "./web:",
         "build_dir": "./public",
-        "sass_in": "./web/scss/**/*.scss",
+        "sass_lib": "./web/scss/lib",
+        "sass_in": "./web/scss/*.scss",
+        "sass_watch":  "./web/scss/**/*.scss",
         "ts_in": "./web/ts/**/*.ts",
-        "ts_out": "./web/temp",
-        "js_in": "./web/temp/*.js",
+        "ts_out": "./web/js",
+        "js_in": "./web/js/*.js",
+        "js_watch":  "./web/js/**/*.js",
         "images": "./web/img/**/*",
-        "images_out": "./public/images"
-    }
+        "images_out": "./public/css/images",
+        "fonts": "./web/fonts/**/*",
+        "fonts_out": "./public/fonts"
+    },
+    "isVisualStudio" : false
 }

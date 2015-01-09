@@ -1,38 +1,40 @@
+include ./common/navbar.jade
+include ./common/calendarmonth.jade
+include ./common/calendarweek.jade
+include ./common/popup.jade
+include ./common/help.jade
+include ./common/about.jade
+include ./common/frame.jade
+include ./common/analytics.jade
+include ./index/eventdetails.jade
+include ./index/eventduration.jade
+include ./index/options.jade
+
 extends layout
 
+block styles
+    link(rel='stylesheet', href='/css/index.css')
 block content
-    #overlay
-    #alert
-    center
-      #container
-        #containertop
-          h1 Scheduler
-          textarea#name(name='name', placeholder='Name of event (Optional)', maxlength='100', type='text')
-          br
-          br
-          textarea#details(name='details', placeholder='Details of event (Optional)', maxlength='200', type='text')
-          br
-          br
-          h2 Drag to select length of event
-          #currenteventlength
-          #eventlength
-          br
-          br
-        #containercenter
-          h2 Drag to select range of available dates
-          #header
-            #title
-            button#previous <
-            button#next >
-          #calendar
-        br
-        #containerbottom
-          h2 Options
-          input#anonymous(type='checkbox', name='anonymous')
-          label Anonymous
-          input#multiple(type='checkbox', name='multiple')
-          label Multiple Votes from Same User
-          #containercreate
-            button#create Create
+    +navbar
+    .content.container-fluid
+        .row
+            +frame('panel-success', 'What\'s the Event?')
+              +eventdetails
+        .row
+            +frame('panel-info', 'How long will it be?')
+              +eventduration
+        .row
+            +frame('panel-warning', 'When can it happen?')
+              #calendarmonth
+                +calendarmonth
+              #calendarweek(hidden='hidden')
+                +calendarweek
+        .row
+            +options
+            button#create.btn.btn-default(type="button" style="float: right;") Create            
+        +popup
+        +help
+        +about
 block footer
       script(src='/js/index.js', type='text/javascript')
+      +analytics

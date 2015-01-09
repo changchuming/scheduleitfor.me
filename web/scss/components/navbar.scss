@@ -1,0 +1,75 @@
+$bgDefault      : white;
+$bgHighlight    : #dbdbdb;
+$colDefault     : #969696;
+$colHighlight   : #000000;
+
+#help, #about {
+    cursor: pointer;
+}
+
+.navbar{
+    border-radius: 0px;
+    margin-bottom: 0px;
+    font-family: 'JunctionBold';
+    font-weight: light;
+}
+
+.navbar-default {
+    background-color: $bgDefault;
+    border-color: $bgHighlight;
+    border-radius: 0px;
+    background-image: none;
+    .navbar-brand {
+        color: $colDefault;
+        &:hover, &:focus {
+            color: $colHighlight; }}
+    .navbar-text {
+        color: $colDefault; }
+    .navbar-nav {
+        > li {
+            > a {
+                color: $colDefault;
+                &:hover,  &:focus {
+                    color: $colHighlight; }}}
+        > .active {
+            > a, > a:hover, > a:focus {
+                color: $colHighlight;
+                background-color: $bgHighlight; }}
+        > .open {
+            > a, > a:hover, > a:focus {
+                color: $colHighlight;
+                background-color: $bgHighlight; }}}
+    .navbar-toggle {
+        border-color: $bgHighlight;
+        &:hover, &:focus {
+            background-color: $bgHighlight; }
+        .icon-bar {
+            background-color: $colDefault; }}
+    .navbar-collapse,
+    .navbar-form {
+        border-color: $colDefault; }
+    .navbar-link {
+        color: $colDefault;
+        &:hover {
+            color: $colHighlight; }}}
+
+@media (max-width: 767px) {
+    .navbar-brand {
+        float: none;
+        display: inline-block;
+    }
+
+    .navbar-header {
+        text-align: center;
+    }
+
+    .navbar-default .navbar-nav .open .dropdown-menu {
+        > li > a {
+            color: $colDefault;
+            &:hover, &:focus {
+                color: $colHighlight; }}
+        > .active {
+            > a, > a:hover, > a:focus, {
+                color: $colHighlight;
+                background-color: $bgHighlight; }}}
+}

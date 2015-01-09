@@ -1,16 +1,28 @@
 //----------------------------------------------------------------------------------------------
 // Module dependencies
 //----------------------------------------------------------------------------------------------
-
 var express = require('express.io');
-var routes = require('./server/routes');
-var schedule = require('./server/routes/schedule');
-var user = require('./server/routes/user');
+var app = module.exports = express();
+var favicon = require('serve-favicon');
+app.use(favicon(__dirname + '/public/css/images/favicon.ico'));
+app.configure(function(){
+  app.use(express.bodyParser());
+  app.use(app.router);
+});
+app.http().io();
 var http = require('http');
 var path = require('path');
 var redis = require('redis')
 redisClient = redis.createClient();
-var app = express();
+console.log(__dirname + '/public/css/images/favicon.ico');
+
+//----------------------------------------------------------------------------------------------
+// Routes
+//----------------------------------------------------------------------------------------------
+var routes = require('./server/routes');
+var schedule = require('./server/routes/schedule');
+var result = require('./server/routes/result');
+var user = require('./server/routes/user');
 
 //----------------------------------------------------------------------------------------------
 // Express - All environments
@@ -39,15 +51,15 @@ if ('development' == app.get('env')) {
 //----------------------------------------------------------------------------------------------
 
 redisClient.on("error", function (err) {
-	res.send("Redis server cannot be reached.");
+	console.log("Redis server cannot be reached.");
 	});
 
 //----------------------------------------------------------------------------------------------
 // Create server and listen to port
 //----------------------------------------------------------------------------------------------
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+app.listen(app.get('port'), function(){
+   console.log("Express server listening on port " + app.get('port'));
 });
 
 //##############################################################################################
@@ -66,11 +78,16 @@ app.post('/create', routes.create);
 app.get('/:schedule', schedule.display);
 
 //##############################################################################################
-// Display a schedule
+// Submit response to a schedule
 //##############################################################################################
 app.post('/submit', schedule.submit);
 
 //##############################################################################################
 // Display results of a schedule
 //##############################################################################################
-app.get('/:schedule/r', schedule.resultset);
+app.get('/:schedule/r', result.display);
+
+//##############################################################################################
+// Display availibility of a schedule
+//##############################################################################################
+app.post('/availability', result.availability);

@@ -1,0 +1,8 @@
+mixin eventdetails
+  form(role="form")
+    div.form-group
+      label(for="EventTitle") Title (optional)
+      input#title.inputfield.form-control(type="text", placeholder="Henry's Birthday")
+    div.form-group
+      label(for="EventDetails") Description (optional)
+      textarea#description.form-control(type='text', placeholder='Dinner @ The Esplanade', maxlength='200')
