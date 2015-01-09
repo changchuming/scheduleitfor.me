@@ -5,6 +5,7 @@ include ./common/popup.jade
 include ./common/help.jade
 include ./common/about.jade
 include ./common/frame.jade
+include ./common/analytics.jade
 include ./index/eventdetails.jade
 include ./index/eventduration.jade
 include ./index/options.jade
@@ -36,3 +37,4 @@ block content
         +about
 block footer
       script(src='/js/index.js', type='text/javascript')
+      +analytics

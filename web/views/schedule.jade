@@ -6,6 +6,7 @@ include ./common/help.jade
 include ./common/about.jade
 include ./common/details.jade
 include ./common/frame.jade
+include ./common/analytics.jade
 include ./schedule/username.jade
 
 extends layout
@@ -38,3 +39,4 @@ block footer
         var schedule = !{schedule}
         var data =!{data}
       script(src='/js/schedule.js', type='text/javascript')
+      +analytics
