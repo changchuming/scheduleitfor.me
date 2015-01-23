@@ -268,8 +268,12 @@ export class CalendarWeekVm extends CalendarMonthVm {
     	} else {
     		for (var count = 0; count<hours.length; count++) {
         		if (hours[count].IsSelected()) {
-        			startMoment = hours[count].CalMoment;
-        			break;
+        			if (startMoment == undefined) {
+        				startMoment = hours[count].CalMoment;
+        			}
+        			else if (hours[count].CalMoment.isBefore(startMoment)) {
+            			startMoment = hours[count].CalMoment;
+        			}
         		}
         	}
     	}
