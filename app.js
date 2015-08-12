@@ -4,7 +4,7 @@
 var express = require('express.io');
 var app = module.exports = express();
 var favicon = require('serve-favicon');
-app.use(favicon(__dirname + '/public/css/images/favicon.ico'));
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.configure(function(){
   app.use(express.bodyParser());
   app.use(app.router);

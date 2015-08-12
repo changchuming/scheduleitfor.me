@@ -10,7 +10,7 @@
         "js_in": "./web/js/*.js",
         "js_watch":  "./web/js/**/*.js",
         "images": "./web/img/**/*",
-        "images_out": "./public/css/images",
+        "images_out": "./public/images",
         "fonts": "./web/fonts/**/*",
         "fonts_out": "./public/fonts"
     },
