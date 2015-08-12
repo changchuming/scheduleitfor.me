@@ -1,6 +1,6 @@
-/// <reference path="../../../definitions/jquery.d.ts" />
-/// <reference path="../../../definitions/jqueryui.d.ts" />
-/// <reference path="../../../definitions/knockout.d.ts" />
+/// <reference path="../../definitions/jquery.d.ts" />
+/// <reference path="../../definitions/jqueryui.d.ts" />
+/// <reference path="../../definitions/knockout.d.ts" />
 
 // Shows message in popup
 export function showMessage(title, message) {

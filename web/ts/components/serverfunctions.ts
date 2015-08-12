@@ -1,5 +1,5 @@
-/// <reference path="../../../definitions/jquery.d.ts" />
-/// <reference path="../../../definitions/jqueryui.d.ts" />
+/// <reference path="../../definitions/jquery.d.ts" />
+/// <reference path="../../definitions/jqueryui.d.ts" />
 
 export function createSchedule(data, showSuccess, showMessage) {
 	$.ajax({

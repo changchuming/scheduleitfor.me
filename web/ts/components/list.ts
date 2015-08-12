@@ -1,8 +1,8 @@
-/// <reference path="../../../definitions/knockout.d.ts" />
-/// <reference path="../../../definitions/jquery.d.ts" />
-/// <reference path="../../../definitions/browserify.d.ts" />
-/// <reference path="../../../definitions/moment.d.ts" />
-/// <reference path="../../../definitions/scheduleit.d.ts" />
+/// <reference path="../../definitions/knockout.d.ts" />
+/// <reference path="../../definitions/jquery.d.ts" />
+/// <reference path="../../definitions/browserify.d.ts" />
+/// <reference path="../../definitions/moment.d.ts" />
+/// <reference path="../../definitions/scheduleit.d.ts" />
 
 // Mode definitions
 var MODE_DAY = 1;
