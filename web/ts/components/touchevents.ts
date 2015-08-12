@@ -1,8 +1,8 @@
-/// <reference path="../../../definitions/jquery.d.ts" />
-/// <reference path="../../../definitions/jqueryui.d.ts" />
-/// <reference path="../../../definitions/touchpunch.d.ts" />
-/// <reference path="../../../definitions/knockout.d.ts" />
-/// <reference path="../../../definitions/scheduleit.d.ts" />
+/// <reference path="../../definitions/jquery.d.ts" />
+/// <reference path="../../definitions/jqueryui.d.ts" />
+/// <reference path="../../definitions/touchpunch.d.ts" />
+/// <reference path="../../definitions/knockout.d.ts" />
+/// <reference path="../../definitions/scheduleit.d.ts" />
 
 export function InitializeSelection(ko: KnockoutStatic, $: JQueryStatic) {
     // Initializes JQueryUI Selectable on an Item

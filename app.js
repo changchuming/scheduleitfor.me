@@ -27,7 +27,7 @@ var user = require('./server/routes/user');
 //----------------------------------------------------------------------------------------------
 // Express - All environments
 //----------------------------------------------------------------------------------------------
-app.set('port', process.env.PORT || 80);
+app.set('port', process.env.PORT || 44444);
 app.set('views', path.join(__dirname, 'web/views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
