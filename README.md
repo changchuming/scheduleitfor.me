@@ -7,7 +7,7 @@ Step 1: Install missing packages and dependencies
 
 Step 2: Edit `./gulp/config.json` to indicate whether you are using Visual Studio
 
-```json
+```
 {
     // Other Stuff Above
     "isVisualStudio" : true // Indicate whether you are using VisualStudio typescript or not.
@@ -48,7 +48,7 @@ scheduleitfor.me is built using the following tools:
 The application is structured in the following manner:
 
 ```
-scheduleitforme
+scheduleitfor.me
     - public // Production version of front end files
 
     - server // Server code
@@ -64,17 +64,33 @@ scheduleitforme
 ```
 
 # Scheduler
+Scheduleitfor.me helps you to schedule your events effortlessly. Select a range of dates, share the link generated, and view the results in real-time! Set up a schedule in under ten seconds using our click and drag interface.
 
 
 ## Usage
+The scheduling app is hosted [here](http://scheduleitfor.me).
 
+###Create a schedule
+1. Drag to select the range of dates that the participants can vote for.
+2. Click 'Create' to get the generated link and share it with your friends!
 
+Optionally, you can also:
+1. Fill in the title and details of your event.
+2. Select the length of the event by dragging the slider.
+3. Select whether you want the participants to vote anonymously and whether each IP is limited to one vote.
 
+###Vote
+1. Fill in your name if required.
+2. Click or drag to select the range of dates that you are available on.
+3. Click 'Submit' to vote!
+
+###Results
+Click 'Details' to get the names of participants for each available date.
 ## Developing
+You can contact [Chu-Ming](mailto:changchuming@gmail.com) with any queries on development.
 
 
-
-### Tools
+## Tools
 
 Created with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)
  ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   
