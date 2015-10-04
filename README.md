@@ -1,11 +1,11 @@
 # Build Instructions
-Step 1: Install missing packages and dependencies
+1. Install missing packages and dependencies
 ```
 > npm install
 > bower install
 ```
 
-Step 2: Edit `./gulp/config.json` to indicate whether you are using Visual Studio
+2. Edit `./gulp/config.json` to indicate whether you are using Visual Studio
 
 ```
 {
@@ -14,7 +14,7 @@ Step 2: Edit `./gulp/config.json` to indicate whether you are using Visual Studi
 }
 ```
 
-Step 3: Build Files and Start Watch
+3. Build Files and Start Watch
 
 Type the following :
 
@@ -24,13 +24,13 @@ gulp
 
 in the console. This will build your typescript and SASS files and compile them. It will also watch the directory for changes and recompile them when changes are made automatically.
 
-Step 3: Run redis
+4. Run redis
 You need to start an instance of redis. On windows, redis can be found at this [link]().
 
-Step 4: Run the app
+5. Run the app
 Type: `node app` in the console.
 
-Step 5: (Optional) Enable Livereload
+6. (Optional) Enable Livereload
 If you have Google Chrome installed, you can install the Livereload extension at the following [link](). After installation, the website will refresh anytime changes are made.
 
 # App Architecture
@@ -88,7 +88,7 @@ Optionally, you can also:
 Click 'Details' to get the names of participants for each available date.
 ## Developing
 You can contact [Chu-Ming](mailto:changchuming@gmail.com) with any queries on development.
-
+Scheduleitfor.me is made by [Chu-Ming](changchuming.github.io) with the help of [Kiang Teng](http://kiangtengl.github.io/). Special thanks to [Shifeng](https://www.facebook.com/sfillustrations) for designing the logo.
 
 ## Tools
 
