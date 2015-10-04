@@ -1,11 +1,11 @@
 # Build Instructions
-1. Install missing packages and dependencies
+Step 1. Install missing packages and dependencies
 ```
 > npm install
 > bower install
 ```
 
-2. Edit `./gulp/config.json` to indicate whether you are using Visual Studio
+Step 2. Edit `./gulp/config.json` to indicate whether you are using Visual Studio
 
 ```
 {
@@ -14,7 +14,7 @@
 }
 ```
 
-3. Build Files and Start Watch
+Step 3. Build Files and Start Watch
 
 Type the following :
 
@@ -24,13 +24,13 @@ gulp
 
 in the console. This will build your typescript and SASS files and compile them. It will also watch the directory for changes and recompile them when changes are made automatically.
 
-4. Run redis
+Step 4. Run redis
 You need to start an instance of redis. On windows, redis can be found at this [link]().
 
-5. Run the app
+Step 5. Run the app
 Type: `node app` in the console.
 
-6. (Optional) Enable Livereload
+Step 6. (Optional) Enable Livereload
 If you have Google Chrome installed, you can install the Livereload extension at the following [link](). After installation, the website will refresh anytime changes are made.
 
 # App Architecture
