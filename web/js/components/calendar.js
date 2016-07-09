@@ -1,9 +1,9 @@
-/// <reference path="../../../definitions/knockout.d.ts" />
-/// <reference path="../../../definitions/jquery.d.ts" />
-/// <reference path="../../../definitions/browserify.d.ts" />
-/// <reference path="../../../definitions/moment.d.ts" />
-/// <reference path="../../../definitions/scheduleit.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../../definitions/knockout.d.ts" />
+/// <reference path="../../definitions/jquery.d.ts" />
+/// <reference path="../../definitions/browserify.d.ts" />
+/// <reference path="../../definitions/moment.d.ts" />
+/// <reference path="../../definitions/scheduleit.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -169,9 +169,11 @@ var CalendarMonthVm = (function () {
         if (endDay.day() != 0) {
             endDay.add(DAYS_IN_WEEK - endDay.day(), 'days');
         }
+        // Create CalendarDay objects for each date
         while (!moment(startDay).isAfter(endDay, "day")) {
             var calDay = new CalendarDay(moment(startDay));
-            if (startDay.month() != StartOfMonth.month() || (startDay.isBefore(this.startOfCalendar))) {
+            if (startDay.month() != StartOfMonth.month()
+                || (startDay.isBefore(this.startOfCalendar))) {
                 calDay.setEnabledStatus(false);
             }
             else if (this.availableArray != undefined) {
@@ -196,9 +198,7 @@ exports.CalendarMonthVm = CalendarMonthVm;
 // #############################################################################
 var DummyHour = (function () {
     function DummyHour(DateText, Status, CalMoment, IsSelected) {
-        if (Status === void 0) { Status = ko.computed(function () {
-            return 'hour header false';
-        }); }
+        if (Status === void 0) { Status = ko.computed(function () { return 'hour header false'; }); }
         if (CalMoment === void 0) { CalMoment = null; }
         if (IsSelected === void 0) { IsSelected = ko.observable(false); }
         this.DateText = DateText;
@@ -207,8 +207,7 @@ var DummyHour = (function () {
         this.IsSelected = IsSelected;
         // Initialization
     }
-    DummyHour.prototype.toggleSelectedStatus = function () {
-    }; // Empty function
+    DummyHour.prototype.toggleSelectedStatus = function () { }; // Empty function
     return DummyHour;
 })();
 exports.DummyHour = DummyHour;
@@ -315,6 +314,7 @@ var CalendarWeekVm = (function (_super) {
     // Fills out an array of hours in a week
     CalendarWeekVm.prototype.createCollection = function (StartOfWeek) {
         var startDay = moment(StartOfWeek.subtract(1, 'days')).startOf('week').add(1, 'days'), hours = [];
+        // Create CalendarHour objects for each hour
         for (var hour = 0; hour < HOURS_IN_DAY; hour++) {
             var hourHeader = new DummyHour(moment(startDay).add(hour, 'hour').format('ha'));
             hours.push(hourHeader);
