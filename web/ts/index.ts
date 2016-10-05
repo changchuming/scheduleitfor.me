@@ -86,13 +86,13 @@ function initSlider() {
     	range: "max",
     	min: 1,
     	max: 14,
-    	value: 1,
-    	slide: function(event, ui) {
-    	  $("#length").html(ui.value);
-    	}
+    	value: 1
     });
-    $("#length").html('1');
 }
+
+$("#EventDurationSlider").on("slide", function(event, ui) {
+    $("#length").html(ui.value);
+});
 
 function initDetails() {
 	$('.inputfield').bind('keydown', function(e) {

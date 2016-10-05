@@ -64,10 +64,8 @@
 @media only screen and (max-width: 600px) {
   .day_names.cal_row > div span {
     display: none; }
-
   .cal_row > div {
-    height: 60px; }
- }
+    height: 60px; } }
 
 /*! =========================================================
  * bootstrap-slider.js
