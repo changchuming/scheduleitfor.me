@@ -35,7 +35,7 @@ If you have Google Chrome installed, you can install the Livereload extension at
 
 # App Architecture
 
-scheduleitfor.me is built using the following tools:
+scheduleit is built using the following tools:
 
 *   Web Framework: Express
 *   HTML Template: Jade
@@ -48,7 +48,7 @@ scheduleitfor.me is built using the following tools:
 The application is structured in the following manner:
 
 ```
-scheduleitfor.me
+scheduleit
     - public // Production version of front end files
 
     - server // Server code
@@ -64,11 +64,11 @@ scheduleitfor.me
 ```
 
 # Scheduler
-Scheduleitfor.me helps you to schedule your events effortlessly. Select a range of dates, share the link generated, and view the results in real-time! Set up a schedule in under ten seconds using our click and drag interface.
+Scheduleit helps you to schedule your events effortlessly. Select a range of dates, share the link generated, and view the results in real-time! Set up a schedule in under ten seconds using our click and drag interface.
 
 
 ## Usage
-The scheduling app is hosted [here](http://scheduleitfor.me).
+The scheduling app is hosted [here](http://schedule.chum.spaces).
 
 ###Create a schedule
 1. Drag to select the range of dates that the participants can vote for.
@@ -88,7 +88,7 @@ Optionally, you can also:
 Click 'Details' to get the names of participants for each available date.
 ## Developing
 You can contact [Chu-Ming](mailto:changchuming@gmail.com) with any queries on development.
-Scheduleitfor.me is made by [Chu-Ming](changchuming.github.io) with the help of [Kiang Teng](http://kiangtengl.github.io/). Special thanks to [Shifeng](https://www.facebook.com/sfillustrations) for designing the logo.
+Scheduleit is made by [Chu-Ming](changchuming.github.io) with the help of [Kiang Teng](http://kiangtengl.github.io/). Special thanks to [Shifeng](https://www.facebook.com/sfillustrations) for designing the logo.
 
 ## Tools
 
