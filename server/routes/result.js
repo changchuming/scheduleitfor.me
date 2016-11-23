@@ -48,7 +48,7 @@ exports.broadcastSchedule = function(io, schedule) {
     redisClient.zrevrange('schedule:'+schedule+':selectedrange', 0, 29, 'withscores', function(err, top) {
         redisClient.get('schedule:'+schedule+':usercount', function(err, usercount) {
             var data = {top: JSON.stringify(top), usercount: usercount};
-            io.room(schedule).broadcast('top', data);
+            io.to(schedule).broadcast('top', data);
         });
     });
 }
@@ -58,5 +58,5 @@ exports.broadcastSchedule = function(io, schedule) {
 //##############################################################################################
 exports.broadcastAvailability = function(io, schedule, username, selectedrange) {
     var data = {username: username, selectedrange: JSON.stringify(selectedrange)};
-    io.room(schedule).broadcast('availability', data);
+    io.to(schedule).broadcast('availability', data);
 }
