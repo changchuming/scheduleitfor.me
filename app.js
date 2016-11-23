@@ -38,6 +38,7 @@ var user = require('./server/routes/user');
 //----------------------------------------------------------------------------------------------
 
 io.sockets.on('connection', function (socket) {
+	// Joins a room
 	socket.on('join', function(room) {
 	    socket.join(room);
 	    result.broadcastSchedule(io, room);
@@ -48,8 +49,6 @@ io.sockets.on('connection', function (socket) {
 	    socket.leave(room);
 	})
 });
-
-// Joins a room
 
 
 //----------------------------------------------------------------------------------------------
