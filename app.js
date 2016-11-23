@@ -1,20 +1,29 @@
 //----------------------------------------------------------------------------------------------
 // Module dependencies
 //----------------------------------------------------------------------------------------------
-var express = require('express.io');
-var app = module.exports = express();
-var favicon = require('serve-favicon');
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.configure(function(){
-  app.use(express.bodyParser());
-  app.use(app.router);
-});
-app.http().io();
-var http = require('http');
+// Express
+var app = require('express')();
+var http = require('http').Server(app);
+
 var path = require('path');
+var fs = require('fs');
+var util = require("util");
+
+// Middleware
+var favicon = require('serve-favicon'); 
+var bodyParser = require('body-parser');
+var morgan = require('morgan');
+var methodOverride = require('method-override');
+var static = require('serve-static');
+var errorHandler = require('errorhandler');
+
+// Socket.io
+var io = require('socket.io')(http);
+app.set('socketio', io); // Pass to routes
+
+// Redis
 var redis = require('redis')
 redisClient = redis.createClient();
-console.log(__dirname + '/public/css/images/favicon.ico');
 
 //----------------------------------------------------------------------------------------------
 // Routes
@@ -25,25 +34,44 @@ var result = require('./server/routes/result');
 var user = require('./server/routes/user');
 
 //----------------------------------------------------------------------------------------------
+// Sockets
+//----------------------------------------------------------------------------------------------
+
+io.sockets.on('connection', function (socket) {
+	socket.on('join', function(room) {
+	    socket.join(room);
+	    result.broadcastSchedule(io, room);
+	})
+
+	// Leaves a room
+	socket.on('leave', function(room) {
+	    socket.leave(room);
+	})
+});
+
+// Joins a room
+
+
+//----------------------------------------------------------------------------------------------
 // Express - All environments
 //----------------------------------------------------------------------------------------------
-app.set('port', process.env.PORT || 80);
-app.set('views', path.join(__dirname, 'web/views'));
-app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+var port = process.env.PORT || 5000;
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan('combined'));
+app.use(methodOverride('_method'));
+app.use(static(__dirname + '/public'))
 
 //----------------------------------------------------------------------------------------------
 // Development only
 //----------------------------------------------------------------------------------------------
 
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+  app.use(errorHandler());
 }
 
 //----------------------------------------------------------------------------------------------
@@ -58,8 +86,8 @@ redisClient.on("error", function (err) {
 // Create server and listen to port
 //----------------------------------------------------------------------------------------------
 
-app.listen(app.get('port'), function(){
-   console.log("Express server listening on port " + app.get('port'));
+http.listen(port, function(){
+  console.log('listening on: ' + port);
 });
 
 //##############################################################################################

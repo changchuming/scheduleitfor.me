@@ -5,7 +5,6 @@
 //----------------------------------------------------------------------------------------------
 // Module dependencies
 //----------------------------------------------------------------------------------------------
-var app = require('../../app');
 
 //##############################################################################################
 //Display results of a schedule
@@ -41,28 +40,23 @@ exports.availability = function(req, res) {
     });
 }
 
-// Joins a room
-app.io.route('join', function(req) {
-    req.io.join(req.data);
-    broadcastSchedule(req.data);
-})
-
-// Leaves a room
-app.io.route('leave', function(req) {
-    req.io.leave(req.data);
-})
-
-var broadcastSchedule = function(schedule) {
+//##############################################################################################
+// Broadcast schedule of most available dates
+//##############################################################################################
+exports.broadcastSchedule = function(io, schedule) {
     // Get first 10 available dates of result set
     redisClient.zrevrange('schedule:'+schedule+':selectedrange', 0, 29, 'withscores', function(err, top) {
         redisClient.get('schedule:'+schedule+':usercount', function(err, usercount) {
             var data = {top: JSON.stringify(top), usercount: usercount};
-            app.io.room(schedule).broadcast('top', data);
+            io.room(schedule).broadcast('top', data);
         });
     });
 }
 
-exports.broadcastAvailability = function(schedule, username, selectedrange) {
+//##############################################################################################
+// Broadcast availability of specified date
+//##############################################################################################
+exports.broadcastAvailability = function(io, schedule, username, selectedrange) {
     var data = {username: username, selectedrange: JSON.stringify(selectedrange)};
-    app.io.room(schedule).broadcast('availability', data);
+    io.room(schedule).broadcast('availability', data);
 }

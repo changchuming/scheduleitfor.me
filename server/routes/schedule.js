@@ -61,7 +61,7 @@ exports.submit = function(req, res) {
                         redisClient.rpush('schedule:'+req.body.schedule+':userlist:'+selectedrange[i], reply-1);
                     }
                 });
-                result.broadcastAvailability(req.body.schedule, req.body.username, selectedrange);
+                result.broadcastAvailability(req.app.io, req.body.schedule, req.body.username, selectedrange);
             }
             // Adds user ip to iplist
             redisClient.rpush('schedule:'+req.body.schedule+':iplist', ip);
