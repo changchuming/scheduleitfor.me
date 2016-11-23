@@ -1,0 +1,33 @@
+mixin calendarweek
+    nav
+    .input-group
+      span.input-group-btn
+          button.btn.btn-default(type="button" data-bind="click: prev") Prev
+      h3(align="center" data-bind="text: Header")
+      span.input-group-btn
+        button.btn.btn-default(type="button" data-bind="click: next") Next
+    .day_names.cal_row
+      div.hour Time
+      div.hour
+        text(data-bind="text: Day()[0]")
+        span , Monday
+      div.hour
+        text(data-bind="text: Day()[1]")
+        span , Tuesday
+      div.hour
+        text(data-bind="text: Day()[2]")
+        span , Wednesday
+      div.hour
+        text(data-bind="text: Day()[3]")
+        span , Thursday
+      div.hour
+        text(data-bind="text: Day()[4]")
+        span , Friday
+      div.hour
+        text(data-bind="text: Day()[5]")
+        span , Saturday
+      div.hour
+        text(data-bind="text: Day()[6]")
+        span , Sunday
+    .cal_row(data-bind="foreach: Collection, selectable: SelectableOptions")
+      div.ui-state-default(data-bind="text: DateText, css: Status")

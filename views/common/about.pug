@@ -1,0 +1,18 @@
+mixin about
+  #popupabout.modal.fade(aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1")
+      .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;               
+              h4#popupheader.modal-title About
+            .modal-body
+              p#popupbody(style="text-align:left")
+                | Scheduleit is made by 
+                a(href='http://changchuming.github.io') Chu-Ming
+                |  with the help of 
+                a(href='http://kiangtengl.github.io') Kiang Teng
+                | . Special thanks to 
+                a(href='https://www.facebook.com/sfillustrations') Shifeng
+                |  for designing the logo.     
+            .modal-footer
+              button.btn.btn-default(type='button', data-dismiss='modal') Close

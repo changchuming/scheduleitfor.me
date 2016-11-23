@@ -1,0 +1,40 @@
+extends layout
+
+include ./common/navbar.pug
+include ./common/calendarmonth.pug
+include ./common/calendarweek.pug
+include ./common/popup.pug
+include ./common/help.pug
+include ./common/about.pug
+include ./common/frame.pug
+include ./common/analytics.pug
+include ./index/eventdetails.pug
+include ./index/eventduration.pug
+include ./index/options.pug
+
+block styles
+    link(rel='stylesheet', href='/css/index.css')
+block content
+    +navbar
+    .content.container-fluid
+        .row
+            +frame('panel-success', 'What\'s the Event?')
+              +eventdetails
+        .row
+            +frame('panel-info', 'How long will it be?')
+              +eventduration
+        .row
+            +frame('panel-warning', 'When can it happen?')
+              #calendarmonth
+                +calendarmonth
+              #calendarweek(hidden='hidden')
+                +calendarweek
+        .row
+            +options
+            button#create.btn.btn-default(type="button" style="float: right;") Create            
+        +popup
+        +help
+        +about
+block footer
+      script(src='/js/index.js', type='text/javascript')
+      +analytics
