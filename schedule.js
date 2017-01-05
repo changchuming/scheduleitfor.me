@@ -20,6 +20,7 @@ var errorHandler = require('errorhandler');
 // Socket.io
 var io = require('socket.io')(http);
 app.set('socketio', io); // Pass to routes
+app.io = io;
 
 // Redis
 var redis = require('redis')
